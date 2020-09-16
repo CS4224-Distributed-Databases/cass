@@ -15,22 +15,14 @@ public class Insert {
         // create parameterized INSERT statement
         SimpleStatement hotelInsert = new SimpleStatement(
                 "INSERT INTO hotels (id, name, phone) VALUES (?, ?, ?) IF NOT EXISTS",
-                "AZ12345", "Super Hotel at WestWorld", "1-888-999-9999");
+                "AZ333", "Super Hotel at WestWorld", "1-888-999-9999");
 
         ResultSet hotelInsertResult = session.execute(hotelInsert);
 
-        // result metadata
-//        System.out.println(hotelInsertResult);
-//        System.out.println(hotelInsertResult.wasApplied());
-//        System.out.println(hotelInsertResult.getExecutionInfo());
-//        System.out.println(hotelInsertResult.getExecutionInfo().getQueryTrace());
-
         // print results
         System.out.println("Inserted: ");
-        for (Row row : hotelInsertResult) {
-            System.out.format("id: %s, name: %s, phone: %s\n\n", row.getString("id"), row.getString("name"), row.getString("phone"));
-        }
-        // close and exit
+        System.out.println(hotelInsertResult.wasApplied());
+
         cluster.close();
         System.exit(0);
     }

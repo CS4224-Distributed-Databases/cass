@@ -38,13 +38,10 @@ public class QueryBuilderDelete {
 
         // print results
         System.out.println("Selected row exists:");
+        // Sometimes the id field got error, remove, run, and put back in, then works its weird af
         for (Row row : hotelSelectResult) {
             System.out.format("id: %s, name: %s, phone: %s\n", row.getString("id"),
                     row.getString("name"), row.getString("phone"));
-        }
-
-        for (Row row : hotelSelectResult) {
-            System.out.println("hi");
         }
 
         // build a DELETE statement
