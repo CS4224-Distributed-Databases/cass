@@ -8,7 +8,7 @@
 - [Wayne Seah](https://github.com/wayneswq)
 
 ## Project Summary
-This learning tasks for this project is 
+This learning tasks for this project are 
 - Install a distributed database system on a cluster of machines
 - Design a data model and implement transactions to support an application
 - Benchmark the performance of an application
