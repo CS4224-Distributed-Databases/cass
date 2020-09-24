@@ -32,7 +32,7 @@ The bulk of our code are in the folder src -> main -> java
 `ccm node1 cqlsh`
 
 - In the cqlsh shell, create a keyspace
-`CREATE KEYSPACE wholesale WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};`
+`CREATE KEYSPACE wholesale WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};`
 
 - Use the created keyspace
 `USE wholesale;`
