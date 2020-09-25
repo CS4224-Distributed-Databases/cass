@@ -33,14 +33,14 @@ public class PaymentTransaction extends BaseTransaction {
     public void execute() {
         // 1. Get and Update Warehouse info
         List<Object> args = new ArrayList<Object>(Arrays.asList(customerWarehouseId, customerDistrictId));
-        Row warehouseInfo = executeCqlQuery(CqlQueries.GET_DISTRICT_INFO, args).get(0);
+        Row warehouseInfo = executeCqlQuery(CqlQueries.GET_WAREHOUSE_INFO, args).get(0);
         double warehousePayment = warehouseInfo.getDecimal(CqlQueries.PAYMENT_W_YTD_INDEX).doubleValue();
         args = new ArrayList<Object>(Arrays.asList(warehousePayment + payment, customerWarehouseId));
         executeCqlQuery(CqlQueries.UPDATE_WAREHOUSE_PAYMENT, args);
 
         // 2. Get and Update District info
         args = new ArrayList<Object>(Arrays.asList(customerWarehouseId));
-        Row districtInfo = executeCqlQuery(CqlQueries.GET_WAREHOUSE_INFO, args).get(0);
+        Row districtInfo = executeCqlQuery(CqlQueries.GET_DISTRICT_INFO, args).get(0);
         double districtPayment = districtInfo.getDecimal(CqlQueries.PAYMENT_D_YTD_INDEX).doubleValue();
         args = new ArrayList<Object>(Arrays.asList(districtPayment + payment, customerWarehouseId, customerDistrictId));
         executeCqlQuery(CqlQueries.UPDATE_DISTRICT_PAYMENT, args);
