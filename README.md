@@ -23,3 +23,20 @@ The bulk of our code are in the folder src -> main -> java
 (TODO)
 - Clone this project into an IDLE of your choice
 - Configure Maven to handle the dependencies required
+
+(for localhost)
+- To create cluster with 3 nodes on local cassandra
+`ccm create local -v 2.0.5 -n 3 -s`
+//TODO use Apache Cassandra 3.11.6 as stated in project, not sure if works for this version
+
+- Launch cqlsh
+`ccm node1 cqlsh`
+
+- In the cqlsh shell, create a keyspace
+`CREATE KEYSPACE wholesale WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};`
+
+- Use the created keyspace
+`USE wholesale;`
+
+- To remove cluster and keyspace and nodes
+`ccm remove`
