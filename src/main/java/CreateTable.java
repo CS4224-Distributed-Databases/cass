@@ -74,7 +74,7 @@ public class CreateTable {
                 addColumn("C_CREDIT", DataType.varchar()).
                 addColumn("C_CREDIT_LIM", DataType.decimal()).
                 addColumn("C_DISCOUNT", DataType.decimal()).
-                addColumn("C_BALANCE", DataType.decimal()). //ck cannot do clustering keys on decimal, performance worse anyway
+                addColumn("C_BALANCE", DataType.decimal()). //ck TODO cannot do clustering keys on decimal, performance worse anyway
                 addColumn("C_YTD_PAYMENT", DataType.cfloat()).
                 addColumn("C_PAYMENT_CNT", DataType.cint()).
                 addColumn("C_DELIVERY_CNT", DataType.cint()).

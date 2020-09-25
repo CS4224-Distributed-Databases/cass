@@ -32,7 +32,7 @@ public class Insert {
         // create session on the "wholesale" keyspace
         Session session = cluster.connect("wholesale");
 
-        loadItem(session); // i_o_id_list not completed
+        loadItem(session); // TODO i_o_id_list not completed
         loadOrderline(session);
         loadStock(session);
 
@@ -75,7 +75,7 @@ public class Insert {
 
         // create parameterized INSERT statement
         PreparedStatement insertPrepared = session.prepare(
-                "INSERT INTO Order_line (OL_W_ID, OL_D_ID, OL_O_ID, OL_NUMBER, OL_I_ID, OL_DELIVERY_D, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY, OL_DIST_INFO, I_NAME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                "INSERT INTO Order_line (OL_W_ID, OL_D_ID, OL_O_ID, OL_NUMBER,  OL_I_ID, OL_DELIVERY_D, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY, OL_DIST_INFO, I_NAME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         BoundStatement insertBound;
 
         String line;
@@ -88,7 +88,7 @@ public class Insert {
 
             String[] row = line.split(",");
 
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneId.of("UTC")); //timestamp must remove timezone
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneId.of("UTC")); //timestamp TODO must remove timezone
 
             int this_item = Integer.parseInt(row[4]);
             insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), Integer.parseInt(row[3]), Integer.parseInt(row[4]), Timestamp.from(Instant.from(format.parse(row[5]))), DatatypeConverter.parseDecimal(row[6]), Integer.parseInt(row[7]), DatatypeConverter.parseDecimal(row[8]), row[9], itemid_to_itemname.get(this_item));
