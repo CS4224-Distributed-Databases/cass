@@ -1,19 +1,13 @@
-import com.datastax.driver.core.Cluster;
+package DataLoader;
+
 import com.datastax.driver.core.DataType;
-import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.schemabuilder.SchemaBuilder;
 import com.datastax.driver.core.schemabuilder.SchemaStatement;
 
-public class CreateTable {
-    public static void main(String[] args) {
-        Cluster cluster = Cluster.builder().addContactPoint("127.0.0.1")
-                //.withCredentials("jeff", "i6XJsj!k#9")
-                .build();
+public class CreateTables {
 
-        // create session on the "wholesale" keyspace
-        Session session = cluster.connect("wholesale");
-
+    public CreateTables(Session session) {
         // Drop table if exists
         try {
             session.execute(SchemaBuilder.dropTable("Warehouse").ifExists());
@@ -142,16 +136,5 @@ public class CreateTable {
                 addColumn("S_DATA", DataType.varchar());
         session.execute(stockSchemaStatement);
 
-        Metadata metadata = cluster.getMetadata();
-        System.out.println("Schema:");
-        System.out.println(metadata.exportSchemaAsString());
-        System.out.println();
-
-        System.out.printf("Schema agreement : %s\n",
-                metadata.checkSchemaAgreement());
-
-        // close and exit
-        cluster.close();
-        System.exit(0);
     }
 }

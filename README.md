@@ -32,11 +32,8 @@ The bulk of our code are in the folder src -> main -> java
 - Launch cqlsh
 `ccm node1 cqlsh`
 
-- In the cqlsh shell, create a keyspace
-`CREATE KEYSPACE wholesale WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};`
-
 - Use the created keyspace
-`USE wholesale;`
+`USE CS4224;`
 
 - To remove cluster and keyspace and nodes
 `ccm remove`
