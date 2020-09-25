@@ -5,7 +5,6 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.schemabuilder.SchemaBuilder;
 import com.datastax.driver.core.schemabuilder.SchemaStatement;
 
-// Problems: cannot specify type length
 public class CreateTable {
     public static void main(String[] args) {
         Cluster cluster = Cluster.builder().addContactPoint("127.0.0.1")
@@ -16,13 +15,17 @@ public class CreateTable {
         Session session = cluster.connect("wholesale");
 
         // Drop table if exists
-        session.execute(SchemaBuilder.dropTable("Warehouse").ifExists());
-        session.execute(SchemaBuilder.dropTable("District").ifExists());
-        session.execute(SchemaBuilder.dropTable("Customer").ifExists());
-        session.execute(SchemaBuilder.dropTable("Order_New").ifExists()); // Order is a reserved keyword
-        session.execute(SchemaBuilder.dropTable("Item").ifExists());
-        session.execute(SchemaBuilder.dropTable("Order_Line").ifExists());
-        session.execute(SchemaBuilder.dropTable("Stock").ifExists());
+        try {
+            session.execute(SchemaBuilder.dropTable("Warehouse").ifExists());
+            session.execute(SchemaBuilder.dropTable("District").ifExists());
+            session.execute(SchemaBuilder.dropTable("Customer").ifExists());
+            session.execute(SchemaBuilder.dropTable("Order_New").ifExists()); // Order is a reserved keyword
+            session.execute(SchemaBuilder.dropTable("Item").ifExists());
+            session.execute(SchemaBuilder.dropTable("Order_Line").ifExists());
+            session.execute(SchemaBuilder.dropTable("Stock").ifExists());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Warehouse
         SchemaStatement warehouseSchemaStatement = SchemaBuilder.createTable("Warehouse").
