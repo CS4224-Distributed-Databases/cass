@@ -49,7 +49,30 @@ public class CqlQueries {
     public static final int PAYMENT_C_CREDIT_LIM_INDEX = 14;
     public static final int PAYMENT_C_DISCOUNT_INDEX = 15;
 
+    // -------------DELIVERY TRANSACTION ----------------------------------------------------------------------------
 
+    public static String YET_DELIVERED_ORDER
+            = "SELECT dt_min_ud_o_id FROM delivery_transaction WHERE dt_w_id = ? AND dt_d_id = ?";
+    public static final String UPDATE_YET_DELIVERED_ORDER
+            = "UPDATE delivery_transaction SET dt_min_ud_o_id = dt_min_ud_o_id + ? WHERE dt_w_id = ? AND dt_d_id = ?";
+    public static final String GET_CUSTOMER_ID_FROM_ORDER
+            = "SELECT o_c_id FROM order_by_o_id WHERE o_w_id = ? AND o_d_id = ? and o_id = ?";
+    public static final String UPDATE_ORDER_CARRIER_ID =
+            "UPDATE order_by_o_id SET o_carrier_id = ? WHERE o_w_id = ? AND o_d_id = ? and o_id = ?";
+    public static final String GET_ORDER_LINES = "SELECT ol_number, ol_amount FROM order_line_item WHERE ol_w_id = ? AND ol_d_id = ? AND ol_o_id = ?";
+    public static final String UPDATE_ORDER_LINES_DELIVERY_DATE
+            = "UPDATE order_line_item SET ol_delivery_d = ? WHERE ol_w_id = ? AND ol_d_id = ? AND ol_o_id = ? and ol_number = ?";
+    public static final String GET_CUSTOMER_BALANCE_AND_DELIVERY_COUNT
+            = "SELECT c_balance, c_delivery_cnt FROM customer_stats WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?";
+    public static final String UPDATE_CUSTOMER_BALANCE_AND_DELIVERY_COUNT
+            = "UPDATE customer_stats SET c_balance = c_balance + ?, c_delivery_cnt = c_delivery_cnt + ? WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?";
 
+    public static int INDEX_MIN_UNDELIVERED_ORDER_ID = 0;
 
+    public static int INDEX_CUSTOMER_ID = 0;
+
+    public static int INDEX_ORDER_LINE_NUMBER = 0;
+    public static int INDEX_ORDER_LINE_AMOUNT = 1;
+
+    public static int INDEX_CUSTOMER_BALANCE = 0;
 }
