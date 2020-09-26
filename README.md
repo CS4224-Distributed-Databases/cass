@@ -15,8 +15,8 @@ This learning tasks for this project are
 
 ## Project Structure
 The bulk of our code are in the folder src -> main -> java
-- Data Loader Folder: Contains the code to load the data into the Cassandra database and create table schemas
-- Data Source Folder: Since the csv files are too big, we will not upload them on github. Ensure that you copy the data csv files to this directory locally. 
+- DataLoader Folder: Contains the code to load the data into the Cassandra database and create table schemas
+- DataSource Folder: Since the csv files are too big, we will not upload them on github. Ensure that you copy the data csv files to this directory locally. 
 - Transactions: Contains a base transaction file + 8 Transaction queries
 
 ## Set up instructions

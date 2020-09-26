@@ -6,6 +6,7 @@ import com.datastax.driver.core.querybuilder.BuiltStatement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 
+// FILE NOT IN USE
 public class QueryBuilderDelete {
     public static void main(String[] args) {
 

@@ -12,7 +12,6 @@ public class Main {
     private static Cluster cluster;
     public static void main(String[] args) throws Exception {
 
-
         // (1) Initialise Cluster
         cluster = Cluster.builder().addContactPoint("127.0.0.1")
                 .build();
@@ -26,6 +25,10 @@ public class Main {
                 + "= {'class':'SimpleStrategy', 'replication_factor':3};";
 
         session.execute(createKeyspaceQuery);
+
+        String useKeyspace = "USE CS4224";
+
+        session.execute(useKeyspace);
 
         System.out.println("Keyspace CS4224 created");
 
@@ -44,15 +47,19 @@ public class Main {
                         .getProtocolVersion());
 
         // (2) Create Tables
+        // TO UNCOMMENT
         CreateTables c = new CreateTables(session);
 
         // (3) Load Data and pass session
         LoadData a = new LoadData(session);
-        a.createTables();
-        close();
+        a.executeLoadData();
+
 
         // (4) Take in inputs...parser
         // TODO: Add code for parser
+
+
+        close();
     }
 
     public static void close(){
