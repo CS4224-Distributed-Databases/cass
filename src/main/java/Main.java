@@ -5,7 +5,6 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Host;
 import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.schemabuilder.Create;
 
 public class Main {
 
@@ -47,8 +46,7 @@ public class Main {
                         .getProtocolVersion());
 
         // (2) Create Tables
-        // TO UNCOMMENT
-        CreateTables c = new CreateTables(session);
+        new CreateTables(session);
 
         // (3) Load Data and pass session
         LoadData a = new LoadData(session);
