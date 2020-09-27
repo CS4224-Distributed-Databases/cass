@@ -1,19 +1,13 @@
-import com.datastax.driver.core.Cluster;
+package DataLoader;
+
 import com.datastax.driver.core.DataType;
-import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.schemabuilder.SchemaBuilder;
 import com.datastax.driver.core.schemabuilder.SchemaStatement;
 
-public class CreateTable {
-    public static void main(String[] args) {
-        Cluster cluster = Cluster.builder().addContactPoint("127.0.0.1")
-                //.withCredentials("jeff", "i6XJsj!k#9")
-                .build();
+public class CreateTables {
 
-        // create session on the "wholesale" keyspace
-        Session session = cluster.connect("wholesale");
-
+    public CreateTables(Session session) {
         // Drop table if exists
         try {
             session.execute(SchemaBuilder.dropTable("Warehouse").ifExists());
@@ -28,6 +22,7 @@ public class CreateTable {
         }
 
         // Warehouse
+        System.out.println("Create Warehouse Table");
         SchemaStatement warehouseSchemaStatement = SchemaBuilder.createTable("Warehouse").
                 addPartitionKey("W_ID", DataType.cint()). //pk
                 addColumn("W_NAME", DataType.varchar()).
@@ -41,6 +36,7 @@ public class CreateTable {
         session.execute(warehouseSchemaStatement);
 
         // District
+        System.out.println("Create District Table");
         SchemaStatement districtSchemaStatement = SchemaBuilder.createTable("District").
                 addPartitionKey("D_W_ID", DataType.cint()). //pk
                 addPartitionKey("D_ID", DataType.cint()). //pk
@@ -57,6 +53,7 @@ public class CreateTable {
         session.execute(districtSchemaStatement);
 
         // Customer
+        System.out.println("Create Customer Table");
         SchemaStatement customerSchemaStatement = SchemaBuilder.createTable("Customer").
                 addPartitionKey("C_W_ID", DataType.cint()). //pk
                 addPartitionKey("C_D_ID", DataType.cint()). //pk
@@ -78,10 +75,13 @@ public class CreateTable {
                 addColumn("C_YTD_PAYMENT", DataType.cfloat()).
                 addColumn("C_PAYMENT_CNT", DataType.cint()).
                 addColumn("C_DELIVERY_CNT", DataType.cint()).
-                addColumn("C_DATA", DataType.varchar());
+                addColumn("C_DATA", DataType.varchar()).
+                addColumn("C_D_NAME", DataType.varchar()).
+                addColumn("C_W_NAME", DataType.varchar());
         session.execute(customerSchemaStatement);
 
         // Order
+        System.out.println("Create Order_New Table");
         SchemaStatement orderSchemaStatement = SchemaBuilder.createTable("Order_New").
                 addPartitionKey("O_W_ID", DataType.cint()). //pk
                 addPartitionKey("O_D_ID", DataType.cint()). //pk
@@ -91,22 +91,24 @@ public class CreateTable {
                 addColumn("O_OL_CNT", DataType.decimal()).
                 addColumn("O_ALL_LOCAL", DataType.decimal()).
                 addColumn("O_ENTRY", DataType.timestamp()).
-                addColumn("C_FIRST", DataType.varchar()). //from customer
-                addColumn("C_MIDDLE", DataType.varchar()). //from customer
-                addColumn("C_LAST", DataType.varchar()); //from customer
+                addColumn("O_C_FIRST", DataType.varchar()). //from customer
+                addColumn("O_C_MIDDLE", DataType.varchar()). //from customer
+                addColumn("O_C_LAST", DataType.varchar()); //from customer
         session.execute(orderSchemaStatement);
 
         // Item
+        System.out.println("Create Item Table");
         SchemaStatement itemSchemaStatement = SchemaBuilder.createTable("Item").
                 addPartitionKey("I_ID", DataType.cint()). //pk
                 addColumn("I_NAME", DataType.varchar()).
                 addColumn("I_PRICE", DataType.decimal()).
                 addColumn("I_IM_ID", DataType.cint()).
                 addColumn("I_DATA", DataType.varchar()).
-                addColumn("I_O_ID_LIST", DataType.set(DataType.varchar())); //from self
+                addColumn("I_O_ID_LIST", DataType.set(DataType.list(DataType.varchar()), true)); //from self
         session.execute(itemSchemaStatement);
 
         // Order-Line
+        System.out.println("Create Order_Line Table");
         SchemaStatement orderlineSchemaStatement = SchemaBuilder.createTable("Order_Line").
                 addPartitionKey("OL_W_ID", DataType.cint()). //pk
                 addPartitionKey("OL_D_ID", DataType.cint()). //pk
@@ -118,10 +120,11 @@ public class CreateTable {
                 addColumn("OL_SUPPLY_W_ID", DataType.cint()).
                 addColumn("OL_QUANTITY", DataType.decimal()).
                 addColumn("OL_DIST_INFO", DataType.varchar()).
-                addColumn("I_NAME", DataType.varchar()); //from item
+                addColumn("OL_I_NAME", DataType.varchar()); //from item
         session.execute(orderlineSchemaStatement);
 
         // Stock
+        System.out.println("Create Stock Table");
         SchemaStatement stockSchemaStatement = SchemaBuilder.createTable("Stock").
                 addPartitionKey("S_W_ID", DataType.cint()). //pk
                 addPartitionKey("S_I_ID", DataType.cint()). //pk
@@ -142,16 +145,5 @@ public class CreateTable {
                 addColumn("S_DATA", DataType.varchar());
         session.execute(stockSchemaStatement);
 
-        Metadata metadata = cluster.getMetadata();
-        System.out.println("Schema:");
-        System.out.println(metadata.exportSchemaAsString());
-        System.out.println();
-
-        System.out.printf("Schema agreement : %s\n",
-                metadata.checkSchemaAgreement());
-
-        // close and exit
-        cluster.close();
-        System.exit(0);
     }
 }

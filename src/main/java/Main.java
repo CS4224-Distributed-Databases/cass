@@ -1,15 +1,35 @@
+import DataLoader.CreateTables;
+import DataLoader.LoadData;
+
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Host;
 import com.datastax.driver.core.Metadata;
+import com.datastax.driver.core.Session;
 
 public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello World");
-        Cluster cluster = Cluster.builder().addContactPoint("127.0.0.1")
-                //.withCredentials("jeff", "i6XJsj!k#9")
+
+    private static Cluster cluster;
+    public static void main(String[] args) throws Exception {
+
+        // (1) Initialise Cluster
+        cluster = Cluster.builder().addContactPoint("127.0.0.1")
                 .build();
 
         cluster.init();
+
+        Session session = cluster.connect();
+
+        // Create Keyspace called CS4224
+        String createKeyspaceQuery = "CREATE KEYSPACE IF NOT EXISTS CS4224 WITH replication "
+                + "= {'class':'SimpleStrategy', 'replication_factor':3};";
+
+        session.execute(createKeyspaceQuery);
+
+        String useKeyspace = "USE CS4224";
+
+        session.execute(useKeyspace);
+
+        System.out.println("Keyspace CS4224 created");
 
         Metadata metadata = cluster.getMetadata();
         System.out.printf("Connected to cluster: %s %s\n",
@@ -25,8 +45,25 @@ public class Main {
                         .getProtocolOptions()
                         .getProtocolVersion());
 
+        // (2) Create Tables
+        new CreateTables(session);
+
+        // (3) Load Data and pass session
+        LoadData a = new LoadData(session);
+        a.executeLoadData();
+
+
+        // (4) Take in inputs...parser
+        // TODO: Add code for parser
+
+
+        close();
+    }
+
+    public static void close(){
         // close and exit
         cluster.close();
         System.exit(0);
     }
+
 }
