@@ -4,18 +4,18 @@ public class CqlQueries {
 
     // -------------PAYMENT TRANSACTION ----------------------------------------------------------------------------
 
-    public static final String GET_WAREHOUSE_INFO = "SELECT W_YTD, W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP " +
-            "FROM warehouse WHERE W_ID = ?";
-    public static final String UPDATE_WAREHOUSE_PAYMENT = "UPDATE warehouse SET W_YTD = ? WHERE W_ID = ?";
-    public static final String GET_DISTRICT_INFO = "SELECT D_YTD, D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP" +
-            "FROM district WHERE D_W_ID = ? AND D_ID = ?";
-    public static final String UPDATE_DISTRICT_PAYMENT = "UPDATE district SET D_YTD = ? WHERE D_W_ID = ? AND D_ID = ?";
-    public static final String GET_CUSTOMER_INFO = "SELECT C_BALANCE, C_YTD_PAYMENT, C_PAYMENT_CNT, " +
+    public static final String P_GET_WAREHOUSE_INFO = "SELECT W_YTD, W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP " +
+            "FROM Warehouse WHERE W_ID = ?";
+    public static final String P_UPDATE_WAREHOUSE_PAYMENT = "UPDATE Warehouse SET W_YTD = ? WHERE W_ID = ?";
+    public static final String P_GET_DISTRICT_INFO = "SELECT D_YTD, D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP" +
+            "FROM District WHERE D_W_ID = ? AND D_ID = ?";
+    public static final String P_UPDATE_DISTRICT_PAYMENT = "UPDATE District SET D_YTD = ? WHERE D_W_ID = ? AND D_ID = ?";
+    public static final String P_GET_CUSTOMER_INFO = "SELECT C_BALANCE, C_YTD_PAYMENT, C_PAYMENT_CNT, " +
             "C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, C_CITY, C_STATE, C_ZIP " +
-            "C_PHONE, C_SINCE, C_CREDIT, C_CREDIT LIM, C_DISCOUNT FROM customer " +
+            "C_PHONE, C_SINCE, C_CREDIT, C_CREDIT LIM, C_DISCOUNT FROM Customer " +
             "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
-    public static final String UPDATE_CUSTOMER_PAYMENT = "UPDATE customer SET C_BALANCE = ? AND C_YTD_PAYMENT = ? " +
-            "AND C_PAYMENT_CNT = ? WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
+    public static final String P_UPDATE_CUSTOMER_PAYMENT = "UPDATE Customer SET C_BALANCE = ?, C_YTD_PAYMENT = ?, " +
+            "C_PAYMENT_CNT = ? WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
 
     // Indexes for Payment Transaction
     public static final int PAYMENT_W_YTD_INDEX = 0;
