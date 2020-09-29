@@ -1,6 +1,37 @@
 package util;
 
 public class CqlQueries {
+    // -------------NEW ORDER TRANSACTION ----------------------------------------------------------------------------
+
+    public static final String N_GET_DISTRICT_INFO = "SELECT D_NEXT_O_ID, D_TAX, W_TAX FROM District WHERE D_W_ID = ? AND D_ID = ?";
+    public static final String N_UPDATE_DISTRICT_NEXT_O_ID = "UPDATE District SET D_NEXT_O_ID = ? WHERE D_W_ID = ? AND D_ID = ?";
+    public static final String N_GET_CUSTOMER_INFO = "SELECT C_FIRST, C_MIDDLE, C_LAST, C_CREDIT, C_DISCOUNT FROM Customer WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
+    public static final String N_GET_STOCK_INFO = "SELECT S_QUANTITY, S_YTD, S_ORDER_CNT, S_REMOTE_CNT, ? FROM Stock WHERE S_W_ID = ? AND S_I_ID = ?";
+    public static final String N_UPDATE_STOCK_QUANTITY = "UPDATE Stock SET S_QUANTITY = ?, S_YTD = ?, S_ORDER_CNT = ?, S_REMOTE_CNT = ? WHERE D_W_ID = ? AND D_ID = ?";
+    public static final String N_GET_ITEM_INFO = "SELECT I_PRICE, I_NAME FROM Item WHERE I_ID = ?";
+    public static final String N_CREATE_ORDER_LINE = "INSERT INTO Order_Line (OL_O_ID, OL_D_ID, OL_W_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DIST_INFO, OL_I_NAME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String N_CREATE_ORDER = "INSERT INTO Order_New (O_ID, O_D_ID, O_W_ID, O_C_ID, O_ENTRY_D, O_OL_CNT, O_ALL_LOCAL, O_C_FIRST, O_C_MIDDLE, O_C_LAST) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    // Indexes for New Order Transaction
+    public static final int N_D_NEXT_O_ID_INDEX = 0;
+    public static final int N_D_TAX_INDEX = 1;
+    public static final int N_W_TAX_INDEX = 2;
+
+    public static final int N_C_FIRST_INDEX = 0;
+    public static final int N_C_MIDDLE_INDEX = 1;
+    public static final int N_C_LAST_INDEX = 2;
+    public static final int N_C_CREDIT_INDEX = 3;
+    public static final int N_C_DISCOUNT_INDEX = 4;
+
+    public static final int N_S_QUANTITY_INDEX = 0;
+    public static final int N_S_YTD_INDEX = 1;
+    public static final int N_S_ORDER_CNT_INDEX = 2;
+    public static final int N_S_REMOTE_CNT_INDEX = 3;
+    public static final int N_S_DIST_INDEX = 4;
+
+    public static final int N_I_PRICE_INDEX = 0;
+    public static final int N_I_NAME_INDEX = 1;
+
 
     // -------------PAYMENT TRANSACTION ----------------------------------------------------------------------------
 
