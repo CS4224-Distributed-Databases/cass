@@ -8,6 +8,7 @@ import util.TimeHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class PaymentTransaction extends BaseTransaction {
     private int customerWarehouseId;
@@ -20,9 +21,9 @@ public class PaymentTransaction extends BaseTransaction {
     }
 
     @Override
-    public void parseInput(String[] inputLines) {
+    public void parseInput(Scanner sc, String inputLine) {
         // Payment expects format of P,C W ID,C D ID,C ID,PAYMENT.
-        String[] input = inputLines[0].split(",");
+        String[] input = inputLine.split(",");
         assert(input[0].equals("P"));
         customerWarehouseId = Integer.parseInt(input[1]);
         customerDistrictId = Integer.parseInt(input[2]);

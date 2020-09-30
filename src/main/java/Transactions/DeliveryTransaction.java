@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import util.CqlQueries;
 import static util.TimeHelper.formatDate;
@@ -24,8 +25,9 @@ public class DeliveryTransaction extends BaseTransaction {
     }
 
     @Override
-    public void parseInput(String[] input) {
+    public void parseInput(Scanner sc, String inputLine) {
         // Payment expects format of D,W_ID,CARRIER_ID
+        String[] input = inputLine.split(",");
         assert(input[0].equals("D"));
         this.warehouseID = Integer.parseInt(input[1]);
         this.carrierID = Integer.parseInt(input[2]);

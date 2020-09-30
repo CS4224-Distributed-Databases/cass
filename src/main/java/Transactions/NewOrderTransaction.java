@@ -5,10 +5,7 @@ import com.datastax.driver.core.Session;
 import util.CqlQueries;
 import util.TimeHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class NewOrderTransaction extends BaseTransaction {
     private int customerWarehouseId;
@@ -25,9 +22,9 @@ public class NewOrderTransaction extends BaseTransaction {
     }
 
     @Override
-    public void parseInput(String[] inputLines) {
-        // Payment expects format of P,C W ID,C D ID,C ID,PAYMENT.
-        String[] input = inputLines[0].split(",");
+    public void parseInput(Scanner sc, String inputLine) {
+        // Payment expects format of N,C_ID,W_ID,D_ID,M and has more M lines
+        String[] input = inputLine.split(",");
         assert(input[0].equals("N"));
         customerWarehouseId = Integer.parseInt(input[1]);
         customerDistrictId = Integer.parseInt(input[2]);
@@ -38,7 +35,8 @@ public class NewOrderTransaction extends BaseTransaction {
         supplierWarehouses = new ArrayList<Integer>();
         quantities = new ArrayList<Integer>();
         for(int i = 1; i <= numOfItems; i++) {
-            String[] itemInput =  inputLines[i].split(",");
+            String nextLine = sc.nextLine();
+            String[] itemInput =  nextLine.split(",");
             itemNumbers.add(Integer.parseInt(itemInput[0]));
             supplierWarehouses.add(Integer.parseInt(itemInput[1]));
             quantities.add(Integer.parseInt(itemInput[2]));

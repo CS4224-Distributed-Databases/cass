@@ -9,6 +9,7 @@ import com.datastax.driver.core.SimpleStatement;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 public abstract class BaseTransaction {
     Session session;
@@ -19,7 +20,7 @@ public abstract class BaseTransaction {
         this.insertPrepared = new HashMap<>();
     }
 
-    public abstract void parseInput(String[] input);
+    public abstract void parseInput(Scanner sc, String inputLine);
 
     public abstract void execute();
 
