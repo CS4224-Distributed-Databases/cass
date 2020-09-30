@@ -8,7 +8,6 @@ import java.util.Date;
 
 public class TimeHelper {
 
-    //TODO: check if this is the correct format expected
     private static DateTimeFormatter formatter  = new DateTimeFormatterBuilder()
             .appendValue(ChronoField.YEAR, 4)
             .appendLiteral('-')

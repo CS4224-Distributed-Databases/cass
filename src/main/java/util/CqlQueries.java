@@ -106,5 +106,8 @@ public class CqlQueries {
     public static final int DELIVERY_OL_AMOUNT = 4;
 
     // -------------Related Customers TRANSACTION ----------------------------------------------------------------------------
+    public static String GET_CUSTOMER_ORDERS = "SELECT O_ID from Order_New WHERE O_W_ID = ? AND O_D_ID = ? AND O_C_ID = ?";
+    public static String GET_ITEM_NUMBER_FROM_ORDER_LINE = "SELECT OL_I_ID from Order_Line WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?";
+    public static String GET_CUS_LIST_FROM_ITEM = "SELECT I_O_ID_LIST from Item WHERE I_ID = ?";
 
 }

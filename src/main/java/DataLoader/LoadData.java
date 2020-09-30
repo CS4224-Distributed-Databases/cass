@@ -6,13 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.bind.DatatypeConverter;
@@ -21,7 +16,6 @@ import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
 
-import static util.TimeHelper.formatDate;
 import static util.TimeHelper.getFormatter;
 
 
@@ -33,7 +27,7 @@ public class LoadData {
     private static Map<Integer, String> warehouseid_to_warehousetax;
     private static Map<Integer, ArrayList<String>> customerid_to_customernames;
     private static Map<Integer, ArrayList<Integer>> itemid_to_orderNumbers;
-    private static  Map<Integer, ArrayList<String>> itemid_to_customerNames;
+    private static  Map<Integer, ArrayList<String>> itemid_to_customerIdentifier;
 
     private static final int limit = 1000;
     private static int i = 0;
@@ -47,7 +41,7 @@ public class LoadData {
         this.warehouseid_to_warehousetax = new HashMap<>();
         this.customerid_to_customernames = new HashMap<>();
         this.itemid_to_orderNumbers = new HashMap<>();
-        this.itemid_to_customerNames = new HashMap<>();
+        this.itemid_to_customerIdentifier = new HashMap<>();
         this.session = session;
     }
 
@@ -259,12 +253,13 @@ public class LoadData {
 
                 // We check the Map value entries for those with the current order number
                 // Then we get their corresponding item id
-                // And append the current customer name to the map itemid_to_customerNames
+                // And append the current customer name to the map itemiitemid_to_customerIdentifierd_to_customerNames
                 if(orders.contains(Integer.parseInt(row[2]))){
-                    ArrayList<String> allCustomers = itemid_to_customerNames.getOrDefault(item, new ArrayList<>());
-                    String currentCus = firstName + " " + middleName + " " + lastName;
+                    ArrayList<String> allCustomers = itemid_to_customerIdentifier.getOrDefault(item, new ArrayList<>());
+                    // Current Customer's identifier comprise of: O_W_ID, O_D_ID, O_C_ID
+                    String currentCus = row[0] + " " + row[1] + " " + row[3];
                     allCustomers.add(currentCus);
-                    itemid_to_customerNames.put(item, allCustomers);
+                    itemid_to_customerIdentifier.put(item, allCustomers);
                 }
             }
 
@@ -320,7 +315,7 @@ public class LoadData {
 
             String[] row = line.split(",");
 
-            ArrayList<String> allCust = itemid_to_customerNames.get(Integer.parseInt(row[0]));
+            ArrayList<String> allCust = itemid_to_customerIdentifier.get(Integer.parseInt(row[0]));
 
             insertBound = insertPrepared.bind(Integer.parseInt(row[0]), row[1], DatatypeConverter.parseDecimal(row[2]), Integer.parseInt(row[3]), row[4], allCust);
 

@@ -84,10 +84,10 @@ public class CreateTables {
         // Order
         System.out.println("Create Order_New Table");
         SchemaStatement orderSchemaStatement = SchemaBuilder.createTable("Order_New").
-                addClusteringColumn("O_ID", DataType.cint()).
+                addClusteringColumn("O_C_ID", DataType.cint()).
+                addClusteringColumn("O_ID", DataType.cint()). // lower level clustering key
                 addPartitionKey("O_W_ID", DataType.cint()). //pk
                 addPartitionKey("O_D_ID", DataType.cint()). //pk
-                addClusteringColumn("O_C_ID", DataType.cint()).
                 addColumn("O_CARRIER_ID", DataType.cint()).
                 addColumn("O_OL_CNT", DataType.decimal()).
                 addColumn("O_ALL_LOCAL", DataType.decimal()).

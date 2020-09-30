@@ -1,6 +1,7 @@
 import DataLoader.CreateTables;
 import DataLoader.LoadData;
 import Transactions.DeliveryTransaction;
+import Transactions.RelatedCustomers;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Host;
@@ -57,7 +58,9 @@ public class Main {
         // (4) Take in inputs...parser
         // TODO: Add code for parser
 
-       
+        RelatedCustomers d = new RelatedCustomers(session);
+        d.parseInput(new String[]{"R", "1","1", "1522"});
+        d.execute();
 
         close();
     }
