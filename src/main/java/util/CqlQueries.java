@@ -6,21 +6,52 @@ package util;
 // Ensure that the indexes constants created below follow the correct one.
 
 public class CqlQueries {
+    // -------------NEW ORDER TRANSACTION ----------------------------------------------------------------------------
+
+    public static final String N_GET_DISTRICT_INFO = "SELECT D_NEXT_O_ID, D_TAX, W_TAX FROM District WHERE D_W_ID = ? AND D_ID = ?";
+    public static final String N_UPDATE_DISTRICT_NEXT_O_ID = "UPDATE District SET D_NEXT_O_ID = ? WHERE D_W_ID = ? AND D_ID = ?";
+    public static final String N_GET_CUSTOMER_INFO = "SELECT C_FIRST, C_MIDDLE, C_LAST, C_CREDIT, C_DISCOUNT FROM Customer WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
+    public static final String N_GET_STOCK_INFO = "SELECT S_QUANTITY, S_YTD, S_ORDER_CNT, S_REMOTE_CNT, ? FROM Stock WHERE S_W_ID = ? AND S_I_ID = ?";
+    public static final String N_UPDATE_STOCK_QUANTITY = "UPDATE Stock SET S_QUANTITY = ?, S_YTD = ?, S_ORDER_CNT = ?, S_REMOTE_CNT = ? WHERE D_W_ID = ? AND D_ID = ?";
+    public static final String N_GET_ITEM_INFO = "SELECT I_PRICE, I_NAME FROM Item WHERE I_ID = ?";
+    public static final String N_CREATE_ORDER_LINE = "INSERT INTO Order_Line (OL_O_ID, OL_D_ID, OL_W_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DIST_INFO, OL_I_NAME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String N_CREATE_ORDER = "INSERT INTO Order_New (O_ID, O_D_ID, O_W_ID, O_C_ID, O_ENTRY_D, O_OL_CNT, O_ALL_LOCAL, O_C_FIRST, O_C_MIDDLE, O_C_LAST) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    // Indexes for New Order Transaction
+    public static final int N_D_NEXT_O_ID_INDEX = 0;
+    public static final int N_D_TAX_INDEX = 1;
+    public static final int N_W_TAX_INDEX = 2;
+
+    public static final int N_C_FIRST_INDEX = 0;
+    public static final int N_C_MIDDLE_INDEX = 1;
+    public static final int N_C_LAST_INDEX = 2;
+    public static final int N_C_CREDIT_INDEX = 3;
+    public static final int N_C_DISCOUNT_INDEX = 4;
+
+    public static final int N_S_QUANTITY_INDEX = 0;
+    public static final int N_S_YTD_INDEX = 1;
+    public static final int N_S_ORDER_CNT_INDEX = 2;
+    public static final int N_S_REMOTE_CNT_INDEX = 3;
+    public static final int N_S_DIST_INDEX = 4;
+
+    public static final int N_I_PRICE_INDEX = 0;
+    public static final int N_I_NAME_INDEX = 1;
+
 
     // -------------PAYMENT TRANSACTION ----------------------------------------------------------------------------
 
-    public static final String GET_WAREHOUSE_INFO = "SELECT W_YTD, W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP " +
-            "FROM warehouse WHERE W_ID = ?";
-    public static final String UPDATE_WAREHOUSE_PAYMENT = "UPDATE warehouse SET W_YTD = ? WHERE W_ID = ?";
-    public static final String GET_DISTRICT_INFO = "SELECT D_YTD, D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP" +
-            "FROM district WHERE D_W_ID = ? AND D_ID = ?";
-    public static final String UPDATE_DISTRICT_PAYMENT = "UPDATE district SET D_YTD = ? WHERE D_W_ID = ? AND D_ID = ?";
-    public static final String GET_CUSTOMER_INFO = "SELECT C_BALANCE, C_YTD_PAYMENT, C_PAYMENT_CNT, " +
+    public static final String P_GET_WAREHOUSE_INFO = "SELECT W_YTD, W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP " +
+            "FROM Warehouse WHERE W_ID = ?";
+    public static final String P_UPDATE_WAREHOUSE_PAYMENT = "UPDATE Warehouse SET W_YTD = ? WHERE W_ID = ?";
+    public static final String P_GET_DISTRICT_INFO = "SELECT D_YTD, D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP" +
+            "FROM District WHERE D_W_ID = ? AND D_ID = ?";
+    public static final String P_UPDATE_DISTRICT_PAYMENT = "UPDATE District SET D_YTD = ? WHERE D_W_ID = ? AND D_ID = ?";
+    public static final String P_GET_CUSTOMER_INFO = "SELECT C_BALANCE, C_YTD_PAYMENT, C_PAYMENT_CNT, " +
             "C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, C_CITY, C_STATE, C_ZIP " +
-            "C_PHONE, C_SINCE, C_CREDIT, C_CREDIT LIM, C_DISCOUNT FROM customer " +
+            "C_PHONE, C_SINCE, C_CREDIT, C_CREDIT LIM, C_DISCOUNT FROM Customer " +
             "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
-    public static final String UPDATE_CUSTOMER_PAYMENT = "UPDATE customer SET C_BALANCE = ? AND C_YTD_PAYMENT = ? " +
-            "AND C_PAYMENT_CNT = ? WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
+    public static final String P_UPDATE_CUSTOMER_PAYMENT = "UPDATE Customer SET C_BALANCE = ?, C_YTD_PAYMENT = ?, " +
+            "C_PAYMENT_CNT = ? WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
 
     // Indexes for Payment Transaction
     public static final int PAYMENT_W_YTD_INDEX = 0;
