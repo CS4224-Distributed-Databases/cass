@@ -158,8 +158,6 @@ public class LoadData {
             String warehouseName = warehouseid_to_warehousename.get(Integer.parseInt(row[0]));
             String districtName = districtid_to_districtname.get(Integer.parseInt(row[1]));
 
-            System.out.println(i);
-            System.out.println(row[12]);
             insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), row[3], row[4], row[5],
                     row[6], row[7], row[8], row[9], row[10], row[11], Timestamp.from(Instant.from(getFormatter().parse(row[12]))), row[13], DatatypeConverter.parseDecimal(row[14]),
                     DatatypeConverter.parseDecimal(row[15]),  DatatypeConverter.parseDecimal(row[16]),  Float.parseFloat(row[17]), Integer.parseInt(row[18]),

@@ -57,12 +57,6 @@ public class Main {
         // (4) Take in inputs...parser
         // TODO: Add code for parser
 
-        // TESTING QUERY
-        // TO REMOVE FROM TX
-        DeliveryTransaction d = new DeliveryTransaction(session);
-        d.parseInput(new String[]{"D", "1","2"});
-        d.execute();
-
         close();
     }
 
