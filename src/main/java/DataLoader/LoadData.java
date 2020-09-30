@@ -253,7 +253,7 @@ public class LoadData {
 
                 // We check the Map value entries for those with the current order number
                 // Then we get their corresponding item id
-                // And append the current customer name to the map itemiitemid_to_customerIdentifierd_to_customerNames
+                // And append the current customer name to the map itemid_to_customerIdentifier
                 if(orders.contains(Integer.parseInt(row[2]))){
                     ArrayList<String> allCustomers = itemid_to_customerIdentifier.getOrDefault(item, new ArrayList<>());
                     // Current Customer's identifier comprise of: O_W_ID, O_D_ID, O_C_ID

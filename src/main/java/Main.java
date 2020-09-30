@@ -58,10 +58,6 @@ public class Main {
         // (4) Take in inputs...parser
         // TODO: Add code for parser
 
-        RelatedCustomers d = new RelatedCustomers(session);
-        d.parseInput(new String[]{"R", "1","1", "1522"});
-        d.execute();
-
         close();
     }
 
