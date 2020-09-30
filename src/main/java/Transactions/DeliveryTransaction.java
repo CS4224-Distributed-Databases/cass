@@ -17,7 +17,6 @@ public class DeliveryTransaction extends BaseTransaction {
     private static final int NUM_DISTRICTS = 10;
     private int warehouseID;
     private int carrierID;
-    private static DateTimeFormatter formatter;
 
     public DeliveryTransaction(Session session) {
         super(session);
@@ -29,7 +28,6 @@ public class DeliveryTransaction extends BaseTransaction {
         assert(input[0].equals("D"));
         this.warehouseID = Integer.parseInt(input[1]);
         this.carrierID = Integer.parseInt(input[2]);
-        this.formatter = getFormatter();
     }
 
     @Override
