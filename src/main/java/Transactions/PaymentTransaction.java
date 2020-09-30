@@ -20,8 +20,9 @@ public class PaymentTransaction extends BaseTransaction {
     }
 
     @Override
-    public void parseInput(String[] input) {
+    public void parseInput(String[] inputLines) {
         // Payment expects format of P,C W ID,C D ID,C ID,PAYMENT.
+        String[] input = inputLines[0].split(",");
         assert(input[0].equals("P"));
         customerWarehouseId = Integer.parseInt(input[1]);
         customerDistrictId = Integer.parseInt(input[2]);
@@ -33,21 +34,21 @@ public class PaymentTransaction extends BaseTransaction {
     public void execute() {
         // 1. Get and Update Warehouse info
         List<Object> args = new ArrayList<Object>(Arrays.asList(customerWarehouseId));
-        Row warehouseInfo = executeCqlQuery(CqlQueries.GET_WAREHOUSE_INFO, args).get(0);
+        Row warehouseInfo = executeCqlQuery(CqlQueries.P_GET_WAREHOUSE_INFO, args).get(0);
         double warehousePayment = warehouseInfo.getDecimal(CqlQueries.PAYMENT_W_YTD_INDEX).doubleValue();
         args = new ArrayList<Object>(Arrays.asList(warehousePayment + payment, customerWarehouseId));
-        executeCqlQuery(CqlQueries.UPDATE_WAREHOUSE_PAYMENT, args);
+        executeCqlQuery(CqlQueries.P_UPDATE_WAREHOUSE_PAYMENT, args);
 
         // 2. Get and Update District info
         args = new ArrayList<Object>(Arrays.asList(customerWarehouseId, customerDistrictId));
-        Row districtInfo = executeCqlQuery(CqlQueries.GET_DISTRICT_INFO, args).get(0);
+        Row districtInfo = executeCqlQuery(CqlQueries.P_GET_DISTRICT_INFO, args).get(0);
         double districtPayment = districtInfo.getDecimal(CqlQueries.PAYMENT_D_YTD_INDEX).doubleValue();
         args = new ArrayList<Object>(Arrays.asList(districtPayment + payment, customerWarehouseId, customerDistrictId));
-        executeCqlQuery(CqlQueries.UPDATE_DISTRICT_PAYMENT, args);
+        executeCqlQuery(CqlQueries.P_UPDATE_DISTRICT_PAYMENT, args);
 
         // 3. Get and Update Customer info
         args = new ArrayList<Object>(Arrays.asList(customerWarehouseId, customerDistrictId, customerId));
-        Row customerInfo = executeCqlQuery(CqlQueries.GET_CUSTOMER_INFO, args).get(0);
+        Row customerInfo = executeCqlQuery(CqlQueries.P_GET_CUSTOMER_INFO, args).get(0);
         double customerBalance = customerInfo.getDecimal(CqlQueries.PAYMENT_C_BALANCE_INDEX).doubleValue();
         float customerPayment = customerInfo.getFloat(CqlQueries.PAYMENT_C_YTD_PAYMENT_INDEX);
         int customerPaymentCount = customerInfo.getInt(CqlQueries.PAYMENT_C_PAYMENT_CNT_INDEX);
@@ -56,7 +57,7 @@ public class PaymentTransaction extends BaseTransaction {
                 customerPayment + payment,
                 customerPaymentCount + 1,
                 customerWarehouseId, customerDistrictId, customerId));
-        executeCqlQuery(CqlQueries.UPDATE_CUSTOMER_PAYMENT, args);
+        executeCqlQuery(CqlQueries.P_UPDATE_CUSTOMER_PAYMENT, args);
 
         //4. Print output
         //TODO: check if this is the correct format expected
