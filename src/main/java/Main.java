@@ -1,5 +1,6 @@
 import DataLoader.CreateTables;
 import DataLoader.LoadData;
+import Transactions.DeliveryTransaction;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Host;
@@ -56,6 +57,11 @@ public class Main {
         // (4) Take in inputs...parser
         // TODO: Add code for parser
 
+        // TESTING QUERY
+        // TO REMOVE FROM TX
+        DeliveryTransaction d = new DeliveryTransaction(session);
+        d.parseInput(new String[]{"D", "1","2"});
+        d.execute();
 
         close();
     }

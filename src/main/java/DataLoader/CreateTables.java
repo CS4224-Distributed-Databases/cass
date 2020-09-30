@@ -10,6 +10,7 @@ public class CreateTables {
     public CreateTables(Session session) {
         // Drop table if exists
         try {
+            System.out.println("Drop tables");
             session.execute(SchemaBuilder.dropTable("Warehouse").ifExists());
             session.execute(SchemaBuilder.dropTable("District").ifExists());
             session.execute(SchemaBuilder.dropTable("Customer").ifExists());
@@ -58,7 +59,7 @@ public class CreateTables {
                 addPartitionKey("C_W_ID", DataType.cint()). //pk
                 addPartitionKey("C_D_ID", DataType.cint()). //pk
                 addPartitionKey("C_ID", DataType.cint()). //pk
-                addPartitionKey("C_FIRST", DataType.varchar()).
+                addColumn("C_FIRST", DataType.varchar()).
                 addColumn("C_MIDDLE", DataType.varchar()).
                 addColumn("C_LAST", DataType.varchar()).
                 addColumn("C_STREET_1", DataType.varchar()).
@@ -83,9 +84,9 @@ public class CreateTables {
         // Order
         System.out.println("Create Order_New Table");
         SchemaStatement orderSchemaStatement = SchemaBuilder.createTable("Order_New").
+                addClusteringColumn("O_ID", DataType.cint()).
                 addPartitionKey("O_W_ID", DataType.cint()). //pk
                 addPartitionKey("O_D_ID", DataType.cint()). //pk
-                addPartitionKey("O_ID", DataType.cint()). //pk
                 addColumn("O_C_ID", DataType.cint()).
                 addColumn("O_CARRIER_ID", DataType.cint()).
                 addColumn("O_OL_CNT", DataType.decimal()).
@@ -104,16 +105,16 @@ public class CreateTables {
                 addColumn("I_PRICE", DataType.decimal()).
                 addColumn("I_IM_ID", DataType.cint()).
                 addColumn("I_DATA", DataType.varchar()).
-                addColumn("I_O_ID_LIST", DataType.set(DataType.list(DataType.varchar()), true)); //from self
+                addColumn("I_O_ID_LIST", DataType.list(DataType.varchar())); //from self
         session.execute(itemSchemaStatement);
 
         // Order-Line
         System.out.println("Create Order_Line Table");
         SchemaStatement orderlineSchemaStatement = SchemaBuilder.createTable("Order_Line").
+                addClusteringColumn("OL_NUMBER", DataType.cint()).
                 addPartitionKey("OL_W_ID", DataType.cint()). //pk
                 addPartitionKey("OL_D_ID", DataType.cint()). //pk
                 addPartitionKey("OL_O_ID", DataType.cint()). //pk
-                addPartitionKey("OL_NUMBER", DataType.cint()). //pk
                 addColumn("OL_I_ID", DataType.cint()).
                 addColumn("OL_DELIVERY_D", DataType.timestamp()).
                 addColumn("OL_AMOUNT", DataType.decimal()).
