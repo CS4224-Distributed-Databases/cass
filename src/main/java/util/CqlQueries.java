@@ -89,20 +89,25 @@ public class CqlQueries {
     public static String YET_DELIVERED_ORDER
             = "SELECT * FROM Order_New WHERE O_W_ID = ? AND O_D_ID = ? LIMIT 1;";
     public static final String UPDATE_YET_DELIVERED_ORDER
-            = "UPDATE Order_New SET O_CARRIER_ID = ? WHERE O_ID = ? AND O_W_ID = ? AND O_D_ID = ? IF EXISTS;";
+            = "UPDATE Order_New SET O_CARRIER_ID = ? WHERE O_ID = ? AND O_C_ID = ? AND O_W_ID = ? AND O_D_ID = ? IF EXISTS;";
     public static final String GET_ORDER_LINES = "SELECT * FROM Order_Line WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?";
     public static final String UPDATE_ORDER_LINES_DELIVERY_DATE
             = "UPDATE Order_Line SET OL_DELIVERY_D = ? WHERE OL_NUMBER = ? AND OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?";
     public static final String GET_CUSTOMER_BALANCE_AND_DELIVERY_COUNT
-            = "SELECT C_BALANCE, C_DELIVERY_CNT FROM CUSTOMER WHERE C_ID = ? AND C_W_ID = ? AND C_D_ID = ?";
+            = "SELECT C_BALANCE, C_DELIVERY_CNT FROM Customer WHERE C_ID = ? AND C_W_ID = ? AND C_D_ID = ?";
     public static final String UPDATE_CUSTOMER_BALANCE_AND_DELIVERY_COUNT
-            = "UPDATE CUSTOMER SET c_balance = ?, c_delivery_cnt = ? WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?";
+            = "UPDATE Customer SET c_balance = ?, c_delivery_cnt = ? WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?";
 
     // Indexes for Delivery Transaction
     public static final int DELIVERY_O_ID_INDEX = 2;
-    public static final int DELIVERY_O_C_ID = 5;
+    public static final int DELIVERY_O_C_ID = 3;
 
     public static final int DELIVERY_OL_NUMBER = 3;
     public static final int DELIVERY_OL_AMOUNT = 4;
+
+    // -------------Related Customers TRANSACTION ----------------------------------------------------------------------------
+    public static String GET_CUSTOMER_ORDERS = "SELECT O_ID from Order_New WHERE O_W_ID = ? AND O_D_ID = ? AND O_C_ID = ?";
+    public static String GET_ITEM_NUMBER_FROM_ORDER_LINE = "SELECT OL_I_ID from Order_Line WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?";
+    public static String GET_CUS_LIST_FROM_ITEM = "SELECT I_O_ID_LIST from Item WHERE I_ID = ?";
 
 }
