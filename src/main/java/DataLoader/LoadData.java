@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.bind.DatatypeConverter;
@@ -19,6 +20,10 @@ import javax.xml.bind.DatatypeConverter;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
+
+import static util.TimeHelper.formatDate;
+import static util.TimeHelper.getFormatter;
+
 
 public class LoadData {
 
@@ -30,26 +35,7 @@ public class LoadData {
     private static Map<Integer, ArrayList<Integer>> itemid_to_orderNumbers;
     private static  Map<Integer, ArrayList<String>> itemid_to_customerNames;
 
-    private static DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                                    .appendValue(ChronoField.YEAR, 4)
-                                    .appendLiteral('-')
-                                    .appendPattern("MM")
-                                    .appendLiteral('-')
-                                    .appendPattern("dd")
-                                    .appendLiteral(' ')
-                                    .appendPattern("HH")
-                                    .appendLiteral(':')
-                                    .appendPattern("mm")
-                                    .appendLiteral(':')
-                                    .appendPattern("ss")
-                                    .appendPattern(".")
-                                    .optionalStart().appendPattern("SSS").optionalEnd() // Some time stamps might have 2 SS or 3
-                                    .optionalStart().appendPattern("SS").optionalEnd() // Hence make it optional
-                                    .toFormatter();
-
-    private static DateTimeFormatter format = formatter.withZone(ZoneId.of("UTC")); //timestamp TODO must remove timezone
-
-    private static final int limit = 100;
+    private static final int limit = 1000;
     private static int i = 0;
     private static Session session;
     private static String DIRECTORY = "src/main/java/DataSource/data-files/";
@@ -172,8 +158,10 @@ public class LoadData {
             String warehouseName = warehouseid_to_warehousename.get(Integer.parseInt(row[0]));
             String districtName = districtid_to_districtname.get(Integer.parseInt(row[1]));
 
+            System.out.println(i);
+            System.out.println(row[12]);
             insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), row[3], row[4], row[5],
-                    row[6], row[7], row[8], row[9], row[10], row[11], Timestamp.from(Instant.from(format.parse(row[12]))), row[13], DatatypeConverter.parseDecimal(row[14]),
+                    row[6], row[7], row[8], row[9], row[10], row[11], Timestamp.from(Instant.from(getFormatter().parse(row[12]))), row[13], DatatypeConverter.parseDecimal(row[14]),
                     DatatypeConverter.parseDecimal(row[15]),  DatatypeConverter.parseDecimal(row[16]),  Float.parseFloat(row[17]), Integer.parseInt(row[18]),
                     Integer.parseInt(row[19]), row[20], districtName, warehouseName);
 
@@ -228,7 +216,7 @@ public class LoadData {
 
             int this_item = Integer.parseInt(row[4]);
 
-            insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), Integer.parseInt(row[3]), Integer.parseInt(row[4]), Timestamp.from(Instant.from(format.parse(row[5]))), DatatypeConverter.parseDecimal(row[6]), Integer.parseInt(row[7]), DatatypeConverter.parseDecimal(row[8]), row[9], itemid_to_itemname.get(this_item));
+            insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), Integer.parseInt(row[3]), Integer.parseInt(row[4]), Timestamp.from(Instant.from(getFormatter().parse(row[5]))), DatatypeConverter.parseDecimal(row[6]), Integer.parseInt(row[7]), DatatypeConverter.parseDecimal(row[8]), row[9], itemid_to_itemname.get(this_item));
 
             session.execute(insertBound);
         }
@@ -283,7 +271,7 @@ public class LoadData {
             }
 
             insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), Integer.parseInt(row[3]), Integer.parseInt(row[4]),
-                    DatatypeConverter.parseDecimal(row[5]), DatatypeConverter.parseDecimal(row[6]), Timestamp.from(Instant.from(format.parse(row[7]))), firstName, middleName, lastName);
+                    DatatypeConverter.parseDecimal(row[5]), DatatypeConverter.parseDecimal(row[6]), Timestamp.from(Instant.from(getFormatter().parse(row[7]))), firstName, middleName, lastName);
 
             session.execute(insertBound);
         }

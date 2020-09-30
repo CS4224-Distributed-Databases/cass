@@ -1,21 +1,23 @@
 package Transactions;
 
-import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import util.CqlQueries;
-import util.TimeHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+
+import util.CqlQueries;
+import static util.TimeHelper.formatDate;
+import static util.TimeHelper.getFormatter;
 
 public class DeliveryTransaction extends BaseTransaction {
     private static final int NUM_DISTRICTS = 10;
     private int warehouseID;
     private int carrierID;
-
+    private static DateTimeFormatter formatter;
 
     public DeliveryTransaction(Session session) {
         super(session);
@@ -25,50 +27,65 @@ public class DeliveryTransaction extends BaseTransaction {
     public void parseInput(String[] input) {
         // Payment expects format of D,W_ID,CARRIER_ID
         assert(input[0].equals("D"));
-        warehouseID = Integer.parseInt(input[1]);
-        carrierID = Integer.parseInt(input[2]);
+        this.warehouseID = Integer.parseInt(input[1]);
+        this.carrierID = Integer.parseInt(input[2]);
+        this.formatter = getFormatter();
     }
 
     @Override
     public void execute() {
+
+        System.out.println("Starting Execution of Delivery Transaction...");
+        prepareStatement("YET_DELIVERED_ORDER", CqlQueries.YET_DELIVERED_ORDER);
+        prepareStatement("UPDATE_YET_DELIVERED_ORDER", CqlQueries.UPDATE_YET_DELIVERED_ORDER);
+        prepareStatement("GET_ORDER_LINES", CqlQueries.GET_ORDER_LINES);
+        prepareStatement("UPDATE_ORDER_LINES_DELIVERY_DATE", CqlQueries.UPDATE_ORDER_LINES_DELIVERY_DATE);
+        prepareStatement("GET_CUSTOMER_BALANCE_AND_DELIVERY_COUNT", CqlQueries.GET_CUSTOMER_BALANCE_AND_DELIVERY_COUNT);
+        prepareStatement("UPDATE_CUSTOMER_BALANCE_AND_DELIVERY_COUNT", CqlQueries.UPDATE_CUSTOMER_BALANCE_AND_DELIVERY_COUNT);
+
         for (int i = 1; i <= NUM_DISTRICTS; i++) {
-            // Find the ID of the oldest yet-to-be-delivered order (from d_next_delivery_o_id).
-            List<Object> args = new ArrayList<Object>(Arrays.asList(warehouseID, i));
-            long orderID = executeCqlQuery(CqlQueries.YET_DELIVERED_ORDER, args).get(0).getLong("d_next_delivery_o_id");
-            System.out.printf("The oldest yet-to-be-delivered order in warehouse %d district %d is %d.\n",
-                    warehouseID, i, orderID);
+            // 1: Find the ID of the oldest yet-to-be-delivered order (from d_next_delivery_o_id).
+            List<Row> order = executeQuery("YET_DELIVERED_ORDER", warehouseID, i);
 
-            // Updates the ID of the oldest yet-to-be-delivered order.
-            executeCqlQuery(CqlQueries.UPDATE_YET_DELIVERED_ORDER, args);
-
-            // get order lines
-            List<Object> getOrderArgs = new ArrayList<Object>(Arrays.asList(warehouseID, i, orderID));
-            List<Row> orderLines = executeCqlQuery(CqlQueries.GET_ORDER_LINES, getOrderArgs);
-            double orderLineAmount = 0;
-            Date now = new Date();
-
-            // update order lines with current date time
-            for(Row orderLine : orderLines) {
-                orderLineAmount += orderLine.getDouble(CqlQueries.INDEX_ORDER_LINE_AMOUNT);
-                int orderLineNumber = orderLine.getInt(CqlQueries.INDEX_ORDER_LINE_NUMBER);
-                List<Object> updateOrderLineArgs = new ArrayList<Object>(Arrays.asList(now, warehouseID, i, orderID, orderLineNumber));
-                executeCqlQuery(CqlQueries.UPDATE_ORDER_LINES_DELIVERY_DATE, updateOrderLineArgs);
+            if(order.size() == 0){
+                continue;
             }
 
-            // update order with carrier id
-            List<Object> updateCarrierOrderIdArgs = new ArrayList<Object>(Arrays.asList(carrierID, warehouseID, i, orderID));
-            executeCqlQuery(CqlQueries.UPDATE_ORDER_CARRIER_ID, updateCarrierOrderIdArgs);
+            Integer orderID = order.get(0).getInt(CqlQueries.DELIVERY_O_ID_INDEX);
 
-            // get customer id from order
-            List<Object> getCustomerIdArgs = new ArrayList<Object>(Arrays.asList(warehouseID, i, i, orderID));
-            Row customerRow = executeCqlQuery(CqlQueries.GET_CUSTOMER_ID_FROM_ORDER, getCustomerIdArgs).get(0);
-            int customerId = customerRow.getInt(CqlQueries.INDEX_CUSTOMER_ID);
+            // 2: Update order O_ID by setting O CARRIER ID to CARRIER ID
+            // O_CARRIER_ID, O_ID, O_W_ID, O_D_ID
+            executeQuery("UPDATE_YET_DELIVERED_ORDER", carrierID, orderID, warehouseID, i);
 
-            // update customer balance and delivery count
-            double totalOrderLineAmount = orderLineAmount;
-            List<Object> updateCustomerArgs = new ArrayList<Object>(Arrays.asList((long)(totalOrderLineAmount * 100), 1L,
-                    warehouseID, i, customerId));
-            executeCqlQuery(CqlQueries.UPDATE_CUSTOMER_BALANCE_AND_DELIVERY_COUNT, updateCustomerArgs);
+            // 3: Get all the order-lines  by setting OL DELIVERY D to the current date and time
+            // OL_W_ID, OL_D_ID, OL_O_ID
+            List<Row> allOrderLines = executeQuery("GET_ORDER_LINES", warehouseID, i, orderID);
+
+            BigDecimal orderLineAmount = new BigDecimal(0);
+            Date now = new Date();
+            Timestamp time = Timestamp.valueOf(formatDate(now));
+
+            for (Row orderLine: allOrderLines){
+                // Update DELIVERY_OL_DELIVERY_D to current date and time
+                // OL_DELIVERY_D, OL_NUMBER, OL_W_ID, OL_D_ID, OL_O_ID
+                executeQuery("UPDATE_ORDER_LINES_DELIVERY_DATE", time, orderLine.getInt(CqlQueries.DELIVERY_OL_NUMBER), warehouseID, i, orderID);
+                // Sum the amount from all orderLines
+                orderLineAmount.add(orderLine.getDecimal(CqlQueries.DELIVERY_OL_AMOUNT));
+            }
+
+            // 4: Update balance and delivery count for customer C
+            // C_ID, C_W_ID, C_D_ID
+            Integer customerNumber = order.get(0).getInt(CqlQueries.DELIVERY_O_C_ID);
+            List<Row> customerBalanceAndDeliveryCount = executeQuery("GET_CUSTOMER_BALANCE_AND_DELIVERY_COUNT", customerNumber, warehouseID, i);
+            if (customerBalanceAndDeliveryCount.size() == 0){
+                continue;
+            }
+            BigDecimal customerBalance = customerBalanceAndDeliveryCount.get(0).getDecimal(0);
+            Integer deliveryCount = customerBalanceAndDeliveryCount.get(0).getInt(1);
+            // c_balance, c_delivery_cnt, c_w_id, c_d_id, c_id
+            executeQuery("UPDATE_CUSTOMER_BALANCE_AND_DELIVERY_COUNT", orderLineAmount.add(customerBalance), deliveryCount+1, warehouseID, i, customerNumber);
         }
+
+        System.out.println("Finish executing Delivery Transactions...");
     }
 }

@@ -37,3 +37,6 @@ The bulk of our code are in the folder src -> main -> java
 
 - To remove cluster and keyspace and nodes
 `ccm remove`
+
+## Notes about Cassandra
+- Cassandra will order the partition keys and the clustering keys (ordered by their precedence in the PRIMARY KEY definition), and then the columns follow in ascending order. Hence the ordering of the columns in createTable is not followed.
