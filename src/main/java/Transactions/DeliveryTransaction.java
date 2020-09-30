@@ -5,13 +5,11 @@ import com.datastax.driver.core.Session;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
 import util.CqlQueries;
 import static util.TimeHelper.formatDate;
-import static util.TimeHelper.getFormatter;
 
 public class DeliveryTransaction extends BaseTransaction {
     private static final int NUM_DISTRICTS = 10;
@@ -50,10 +48,11 @@ public class DeliveryTransaction extends BaseTransaction {
             }
 
             Integer orderID = order.get(0).getInt(CqlQueries.DELIVERY_O_ID_INDEX);
+            Integer customerNumber = order.get(0).getInt(CqlQueries.DELIVERY_O_C_ID);
 
             // 2: Update order O_ID by setting O CARRIER ID to CARRIER ID
-            // O_CARRIER_ID, O_ID, O_W_ID, O_D_ID
-            executeQuery("UPDATE_YET_DELIVERED_ORDER", carrierID, orderID, warehouseID, i);
+            // O_CARRIER_ID, O_ID, O_C_ID, O_W_ID, O_D_ID
+            executeQuery("UPDATE_YET_DELIVERED_ORDER", carrierID, customerNumber, orderID, warehouseID, i);
 
             // 3: Get all the order-lines  by setting OL DELIVERY D to the current date and time
             // OL_W_ID, OL_D_ID, OL_O_ID
@@ -73,7 +72,6 @@ public class DeliveryTransaction extends BaseTransaction {
 
             // 4: Update balance and delivery count for customer C
             // C_ID, C_W_ID, C_D_ID
-            Integer customerNumber = order.get(0).getInt(CqlQueries.DELIVERY_O_C_ID);
             List<Row> customerBalanceAndDeliveryCount = executeQuery("GET_CUSTOMER_BALANCE_AND_DELIVERY_COUNT", customerNumber, warehouseID, i);
             if (customerBalanceAndDeliveryCount.size() == 0){
                 continue;

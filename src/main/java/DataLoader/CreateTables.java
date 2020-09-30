@@ -87,7 +87,7 @@ public class CreateTables {
                 addClusteringColumn("O_ID", DataType.cint()).
                 addPartitionKey("O_W_ID", DataType.cint()). //pk
                 addPartitionKey("O_D_ID", DataType.cint()). //pk
-                addColumn("O_C_ID", DataType.cint()).
+                addClusteringColumn("O_C_ID", DataType.cint()).
                 addColumn("O_CARRIER_ID", DataType.cint()).
                 addColumn("O_OL_CNT", DataType.decimal()).
                 addColumn("O_ALL_LOCAL", DataType.decimal()).
