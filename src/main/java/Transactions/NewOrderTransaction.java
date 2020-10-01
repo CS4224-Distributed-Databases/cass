@@ -1,5 +1,6 @@
 package Transactions;
 
+import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import util.CqlQueries;
@@ -18,8 +19,8 @@ public class NewOrderTransaction extends BaseTransaction {
     private List<Integer> supplierWarehouses;
     private List<Integer> quantities;
 
-    public NewOrderTransaction(Session session) {
-        super(session);
+    public NewOrderTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
+        super(session, insertPrepared);
     }
 
     @Override
@@ -27,9 +28,9 @@ public class NewOrderTransaction extends BaseTransaction {
         // Payment expects format of N,C_ID,W_ID,D_ID,M and has more M lines
         String[] input = inputLine.split(",");
         assert(input[0].equals("N"));
-        customerWarehouseId = Integer.parseInt(input[1]);
-        customerDistrictId = Integer.parseInt(input[2]);
-        customerId = Integer.parseInt(input[3]);
+        customerId = Integer.parseInt(input[1]);
+        customerWarehouseId = Integer.parseInt(input[2]);
+        customerDistrictId = Integer.parseInt(input[3]);
         numOfItems = Integer.parseInt(input[4]);
 
         itemNumbers = new ArrayList<Integer>();
@@ -77,18 +78,19 @@ public class NewOrderTransaction extends BaseTransaction {
             int quantity = quantities.get(i);
 
             // 2.1 get updated quantity and update stock
-            String sDistrictNum = "S_DIST_" + customerDistrictId;
-            Row stockInfo = executeQuery("N_GET_STOCK_INFO", sDistrictNum, supplierWarehouse, itemNumber).get(0);
-            int stockQuantity = stockInfo.getInt(CqlQueries.N_S_QUANTITY_INDEX);
+            String zeroAppendedDistrictId = (customerDistrictId%10 == 0) ? String.valueOf(customerDistrictId) : "0" + customerDistrictId;
+            String sDistrictNum = "S_DIST_" + zeroAppendedDistrictId;
+            Row stockInfo = executeQuery("N_GET_STOCK_INFO", supplierWarehouse, itemNumber).get(0);
+            int stockQuantity = stockInfo.getInt("S_QUANTITY");
             int adjustedQuantity = stockQuantity - quantity;
             if (adjustedQuantity < 10) {
                 adjustedQuantity += 100;
             }
             adjustedQuantities.add(adjustedQuantity);
 
-            BigDecimal stockYtd = stockInfo.getDecimal(CqlQueries.N_S_YTD_INDEX);
-            int orderCount = stockInfo.getInt(CqlQueries.N_S_ORDER_CNT_INDEX);
-            int remoteCount = stockInfo.getInt(CqlQueries.N_S_REMOTE_CNT_INDEX);
+            BigDecimal stockYtd = stockInfo.getDecimal("S_YTD");
+            int orderCount = stockInfo.getInt("S_ORDER_CNT");
+            int remoteCount = stockInfo.getInt("S_REMOTE_CNT");
             int newRemoteCount = remoteCount;
             if (supplierWarehouse != customerWarehouseId) {
                 isAllLocal = 0;
@@ -106,7 +108,7 @@ public class NewOrderTransaction extends BaseTransaction {
 
             // 2.2 create new orderline
             // add I_NAME from customer too
-            String sDistInfo = stockInfo.getString(CqlQueries.N_S_DIST_INDEX);
+            String sDistInfo = stockInfo.getString(sDistrictNum);
             executeQuery("N_CREATE_ORDER_LINE",
                     orderNumber, customerDistrictId, customerWarehouseId, i, itemNumber, supplierWarehouse, quantity, itemAmount, sDistInfo, itemName);
 

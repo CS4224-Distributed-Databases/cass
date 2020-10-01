@@ -1,11 +1,13 @@
 package Transactions;
 
+import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import util.CqlQueries;
 import util.TimeHelper;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class PaymentTransaction extends BaseTransaction {
@@ -14,8 +16,8 @@ public class PaymentTransaction extends BaseTransaction {
     private int customerId;
     private BigDecimal payment;
 
-    public PaymentTransaction(Session session) {
-        super(session);
+    public PaymentTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
+        super(session, insertPrepared);
     }
 
     @Override

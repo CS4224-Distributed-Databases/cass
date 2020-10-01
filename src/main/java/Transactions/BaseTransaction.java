@@ -15,9 +15,9 @@ public abstract class BaseTransaction {
     Session session;
     HashMap<String, PreparedStatement> insertPrepared;
 
-    public BaseTransaction(Session session) {
+    public BaseTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
         this.session = session;
-        this.insertPrepared = new HashMap<>();
+        this.insertPrepared = insertPrepared;
     }
 
     public abstract void parseInput(Scanner sc, String inputLine);

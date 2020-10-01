@@ -1,7 +1,11 @@
 package Transactions;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
+
+import com.datastax.driver.core.PreparedStatement;
 import util.CqlQueries;
 
 import com.datastax.driver.core.Row;
@@ -9,19 +13,20 @@ import com.datastax.driver.core.Session;
 import com.google.common.reflect.TypeToken;
 
 
-public class RelatedCustomers extends BaseTransaction {
+public class RelatedCustomersTransaction extends BaseTransaction {
     private static final int NUM_DISTRICTS = 10;
     private int warehouseID;
     private int districtID;
     private int customerID;
 
-    public RelatedCustomers(Session session) {
-        super(session);
+    public RelatedCustomersTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
+        super(session, insertPrepared);
     }
 
     @Override
-    public void parseInput(String[] input) {
+    public void parseInput(Scanner sc, String inputLine) {
         // Related Customers expects format of R, W_ID, D_ID, C_ID
+        String[] input = inputLine.split(",");
         assert(input[0].equals("R"));
         this.warehouseID = Integer.parseInt(input[1]);
         this.districtID = Integer.parseInt(input[2]);

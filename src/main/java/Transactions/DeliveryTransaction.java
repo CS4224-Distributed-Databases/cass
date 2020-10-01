@@ -1,11 +1,13 @@
 package Transactions;
 
+import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,8 +19,8 @@ public class DeliveryTransaction extends BaseTransaction {
     private int warehouseID;
     private int carrierID;
 
-    public DeliveryTransaction(Session session) {
-        super(session);
+    public DeliveryTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
+        super(session, insertPrepared);
     }
 
     @Override
