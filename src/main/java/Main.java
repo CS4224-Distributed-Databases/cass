@@ -1,6 +1,7 @@
 import DataLoader.CreateTables;
 import DataLoader.LoadData;
 import Transactions.DeliveryTransaction;
+import Transactions.RelatedCustomers;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Host;
