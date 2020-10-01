@@ -1,12 +1,11 @@
 import DataLoader.CreateTables;
 import DataLoader.LoadData;
-import Transactions.DeliveryTransaction;
-import Transactions.RelatedCustomers;
+import Transactions.*;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Host;
-import com.datastax.driver.core.Metadata;
-import com.datastax.driver.core.Session;
+import com.datastax.driver.core.*;
+
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class Main {
 
@@ -54,9 +53,36 @@ public class Main {
         LoadData a = new LoadData(session);
         a.executeLoadData();
 
+        // (4) Take in inputs...parser from stdin redirection.
+        HashMap<String, PreparedStatement> insertPrepared = new HashMap<>();
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNext()) {
+            String inputLine = sc.nextLine();
+            BaseTransaction transaction = null;
 
-        // (4) Take in inputs...parser
-        // TODO: Add code for parser
+            if(inputLine.startsWith("N")) {
+                transaction = new NewOrderTransaction(session, insertPrepared);
+            } else if (inputLine.startsWith("P")) {
+                transaction = new PaymentTransaction(session, insertPrepared);
+            } else if (inputLine.startsWith("D")) {
+                transaction = new DeliveryTransaction(session, insertPrepared);
+            } else if (inputLine.startsWith("O")) {
+                //transaction = new OrderStatusTransaction(session, insertPrepared);
+            } else if (inputLine.startsWith("S")) {
+                //transaction = new StockLevelTransaction(session, insertPrepared);
+            } else if (inputLine.startsWith("I")) {
+                //transaction = new PopularItemTransaction(session, insertPrepared);
+            } else if (inputLine.startsWith("T")) {
+                //transaction = new TopBalanceTransaction(session, insertPrepared);
+            } else if (inputLine.startsWith("R")) {
+                transaction = new RelatedCustomersTransaction(session, insertPrepared);
+            }
+
+            if (transaction != null) {
+                transaction.parseInput(sc, inputLine);
+                transaction.execute();
+            }
+        }
 
         close();
     }
