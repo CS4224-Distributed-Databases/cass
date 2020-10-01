@@ -214,7 +214,7 @@ public class LoadData {
 
             int this_item = Integer.parseInt(row[4]);
 
-            insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), Integer.parseInt(row[3]), Integer.parseInt(row[4]), Timestamp.from(Instant.from(getFormatter().parse(row[5]))), DatatypeConverter.parseDecimal(row[6]), Integer.parseInt(row[7]), DatatypeConverter.parseDecimal(row[8]), row[9], itemid_to_itemname.get(this_item));
+            insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), Integer.parseInt(row[3]), Integer.parseInt(row[4]), !row[5].equals("null") ? Timestamp.from(Instant.from(getFormatter().parse(row[5]))) : null, DatatypeConverter.parseDecimal(row[6]), Integer.parseInt(row[7]), DatatypeConverter.parseDecimal(row[8]), row[9], itemid_to_itemname.get(this_item));
 
             session.execute(insertBound);
         }
