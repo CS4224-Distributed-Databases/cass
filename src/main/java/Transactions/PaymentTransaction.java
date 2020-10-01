@@ -1,63 +1,69 @@
 package Transactions;
 
+import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import util.CqlQueries;
 import util.TimeHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class PaymentTransaction extends BaseTransaction {
     private int customerWarehouseId;
     private int customerDistrictId;
     private int customerId;
-    private double payment;
+    private BigDecimal payment;
 
-    public PaymentTransaction(Session session) {
-        super(session);
+    public PaymentTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
+        super(session, insertPrepared);
     }
 
     @Override
-    public void parseInput(String[] inputLines) {
+    public void parseInput(Scanner sc, String inputLine) {
         // Payment expects format of P,C W ID,C D ID,C ID,PAYMENT.
-        String[] input = inputLines[0].split(",");
+        String[] input = inputLine.split(",");
         assert(input[0].equals("P"));
         customerWarehouseId = Integer.parseInt(input[1]);
         customerDistrictId = Integer.parseInt(input[2]);
         customerId = Integer.parseInt(input[3]);
-        payment = Double.parseDouble(input[4]);
+        payment = new BigDecimal(input[4]);
     }
 
     @Override
     public void execute() {
+
+        System.out.println("Starting Execution of Payment Transaction...");
+        prepareStatement("P_GET_WAREHOUSE_INFO", CqlQueries.P_GET_WAREHOUSE_INFO);
+        prepareStatement("P_UPDATE_WAREHOUSE_PAYMENT", CqlQueries.P_UPDATE_WAREHOUSE_PAYMENT);
+        prepareStatement("P_GET_DISTRICT_INFO", CqlQueries.P_GET_DISTRICT_INFO);
+        prepareStatement("P_UPDATE_DISTRICT_PAYMENT", CqlQueries.P_UPDATE_DISTRICT_PAYMENT);
+        prepareStatement("P_GET_CUSTOMER_INFO", CqlQueries.P_GET_CUSTOMER_INFO);
+        prepareStatement("P_UPDATE_CUSTOMER_PAYMENT", CqlQueries.P_UPDATE_CUSTOMER_PAYMENT);
+
+        System.out.println(customerWarehouseId + " "+ customerDistrictId + " "+ customerId + " " + payment);
+
         // 1. Get and Update Warehouse info
-        List<Object> args = new ArrayList<Object>(Arrays.asList(customerWarehouseId));
-        Row warehouseInfo = executeCqlQuery(CqlQueries.P_GET_WAREHOUSE_INFO, args).get(0);
-        double warehousePayment = warehouseInfo.getDecimal(CqlQueries.PAYMENT_W_YTD_INDEX).doubleValue();
-        args = new ArrayList<Object>(Arrays.asList(warehousePayment + payment, customerWarehouseId));
-        executeCqlQuery(CqlQueries.P_UPDATE_WAREHOUSE_PAYMENT, args);
+        Row warehouseInfo = executeQuery("P_GET_WAREHOUSE_INFO", customerWarehouseId).get(0);
+        BigDecimal warehousePayment = warehouseInfo.getDecimal(CqlQueries.PAYMENT_W_YTD_INDEX);
+        executeQuery("P_UPDATE_WAREHOUSE_PAYMENT", warehousePayment.add(payment), customerWarehouseId);
 
         // 2. Get and Update District info
-        args = new ArrayList<Object>(Arrays.asList(customerWarehouseId, customerDistrictId));
-        Row districtInfo = executeCqlQuery(CqlQueries.P_GET_DISTRICT_INFO, args).get(0);
-        double districtPayment = districtInfo.getDecimal(CqlQueries.PAYMENT_D_YTD_INDEX).doubleValue();
-        args = new ArrayList<Object>(Arrays.asList(districtPayment + payment, customerWarehouseId, customerDistrictId));
-        executeCqlQuery(CqlQueries.P_UPDATE_DISTRICT_PAYMENT, args);
+        Row districtInfo = executeQuery("P_GET_DISTRICT_INFO", customerWarehouseId, customerDistrictId).get(0);
+        BigDecimal districtPayment = districtInfo.getDecimal(CqlQueries.PAYMENT_D_YTD_INDEX);
+        executeQuery("P_UPDATE_DISTRICT_PAYMENT", districtPayment.add(payment), customerWarehouseId, customerDistrictId);
 
         // 3. Get and Update Customer info
-        args = new ArrayList<Object>(Arrays.asList(customerWarehouseId, customerDistrictId, customerId));
-        Row customerInfo = executeCqlQuery(CqlQueries.P_GET_CUSTOMER_INFO, args).get(0);
-        double customerBalance = customerInfo.getDecimal(CqlQueries.PAYMENT_C_BALANCE_INDEX).doubleValue();
+        Row customerInfo = executeQuery("P_GET_CUSTOMER_INFO", customerWarehouseId, customerDistrictId, customerId).get(0);
+        BigDecimal customerBalance = customerInfo.getDecimal(CqlQueries.PAYMENT_C_BALANCE_INDEX);
         float customerPayment = customerInfo.getFloat(CqlQueries.PAYMENT_C_YTD_PAYMENT_INDEX);
         int customerPaymentCount = customerInfo.getInt(CqlQueries.PAYMENT_C_PAYMENT_CNT_INDEX);
-        args = new ArrayList<Object>(Arrays.asList(
-                customerBalance - payment,
-                customerPayment + payment,
+        executeQuery("P_UPDATE_CUSTOMER_PAYMENT",
+                customerBalance.subtract(payment),
+                customerPayment + payment.floatValue(),
                 customerPaymentCount + 1,
-                customerWarehouseId, customerDistrictId, customerId));
-        executeCqlQuery(CqlQueries.P_UPDATE_CUSTOMER_PAYMENT, args);
+                customerWarehouseId, customerDistrictId, customerId);
 
         //4. Print output
         //TODO: check if this is the correct format expected
@@ -71,7 +77,7 @@ public class PaymentTransaction extends BaseTransaction {
                 customerInfo.getString(CqlQueries.PAYMENT_C_CREDIT_INDEX),
                 customerInfo.getDecimal(CqlQueries.PAYMENT_C_CREDIT_LIM_INDEX).doubleValue(),
                 customerInfo.getDecimal(CqlQueries.PAYMENT_C_DISCOUNT_INDEX).doubleValue(),
-                customerBalance - payment
+                customerBalance.subtract(payment)
         ));
 
         System.out.println(String.format(
@@ -87,5 +93,7 @@ public class PaymentTransaction extends BaseTransaction {
         ));
 
         System.out.println(String.format("4. Payment: %.2f", payment));
+
+        System.out.println("Finish executing Payment Transaction...");
     }
 }

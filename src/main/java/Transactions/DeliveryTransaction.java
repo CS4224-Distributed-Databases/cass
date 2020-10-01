@@ -1,12 +1,15 @@
 package Transactions;
 
+import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import util.CqlQueries;
 import static util.TimeHelper.formatDate;
@@ -16,13 +19,14 @@ public class DeliveryTransaction extends BaseTransaction {
     private int warehouseID;
     private int carrierID;
 
-    public DeliveryTransaction(Session session) {
-        super(session);
+    public DeliveryTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
+        super(session, insertPrepared);
     }
 
     @Override
-    public void parseInput(String[] input) {
+    public void parseInput(Scanner sc, String inputLine) {
         // Payment expects format of D,W_ID,CARRIER_ID
+        String[] input = inputLine.split(",");
         assert(input[0].equals("D"));
         this.warehouseID = Integer.parseInt(input[1]);
         this.carrierID = Integer.parseInt(input[2]);
@@ -67,7 +71,7 @@ public class DeliveryTransaction extends BaseTransaction {
                 // OL_DELIVERY_D, OL_NUMBER, OL_W_ID, OL_D_ID, OL_O_ID
                 executeQuery("UPDATE_ORDER_LINES_DELIVERY_DATE", time, orderLine.getInt(CqlQueries.DELIVERY_OL_NUMBER), warehouseID, i, orderID);
                 // Sum the amount from all orderLines
-                orderLineAmount.add(orderLine.getDecimal(CqlQueries.DELIVERY_OL_AMOUNT));
+                orderLineAmount = orderLineAmount.add(orderLine.getDecimal(CqlQueries.DELIVERY_OL_AMOUNT));
             }
 
             // 4: Update balance and delivery count for customer C
