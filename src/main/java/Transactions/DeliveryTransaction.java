@@ -72,7 +72,7 @@ public class DeliveryTransaction extends BaseTransaction {
                 // OL_DELIVERY_D, OL_NUMBER, OL_W_ID, OL_D_ID, OL_O_ID
                 executeQuery("UPDATE_ORDER_LINES_DELIVERY_DATE", time, orderLine.getInt(CqlQueries.DELIVERY_OL_NUMBER), warehouseID, i, orderID);
                 // Sum the amount from all orderLines
-                orderLineAmount.add(orderLine.getDecimal(CqlQueries.DELIVERY_OL_AMOUNT));
+                orderLineAmount = orderLineAmount.add(orderLine.getDecimal(CqlQueries.DELIVERY_OL_AMOUNT));
             }
 
             // 4: Update balance and delivery count for customer C
