@@ -24,15 +24,6 @@ public abstract class BaseTransaction {
 
     public abstract void execute();
 
-    // TODO: TO rewrite other transactions that uses this function to use the below two function instead
-    // TODO: and then DELETE THIS function:
-    public List<Row> executeCqlQuery(String query, List<Object> args) {
-        SimpleStatement queryStatement = new SimpleStatement(query, args);
-        ResultSet queryResult = session.execute(queryStatement);
-        List<Row> resultSet = queryResult.all();
-        return resultSet;
-    }
-
     public void prepareStatement(String queryKey, String query){
         if (this.insertPrepared.containsKey(queryKey)){
             return;
