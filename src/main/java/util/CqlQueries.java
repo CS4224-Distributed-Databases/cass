@@ -16,6 +16,7 @@ public class CqlQueries {
     public static final String N_GET_ITEM_INFO = "SELECT I_PRICE, I_NAME FROM Item WHERE I_ID = ?";
     public static final String N_CREATE_ORDER_LINE = "INSERT INTO Order_Line (OL_O_ID, OL_D_ID, OL_W_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DIST_INFO, OL_I_NAME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String N_CREATE_ORDER = "INSERT INTO Order_New (O_ID, O_D_ID, O_W_ID, O_C_ID, O_ENTRY_D, O_OL_CNT, O_ALL_LOCAL, O_C_FIRST, O_C_MIDDLE, O_C_LAST) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String N_UPDATE_ITEM_CUSTOMER_LIST = "UPDATE Item SET I_O_ID_LIST+=? WHERE I_ID = ?";
 
     // Indexes for New Order Transaction
     public static final int N_D_NEXT_O_ID_INDEX = 0;
