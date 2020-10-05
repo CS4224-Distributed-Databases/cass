@@ -83,7 +83,7 @@ public class Main {
             } else if (inputLine.startsWith("I")) {
                 //transaction = new PopularItemTransaction(session, insertPrepared);
             } else if (inputLine.startsWith("T")) {
-                //transaction = new TopBalanceTransaction(session, insertPrepared);
+                transaction = new TopBalanceTransaction(session, insertPrepared);
             } else if (inputLine.startsWith("R")) {
                 transaction = new RelatedCustomersTransaction(session, insertPrepared);
             }
