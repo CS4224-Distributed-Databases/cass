@@ -99,4 +99,20 @@ public class CqlQueries {
     public static String GET_ITEM_NUMBER_FROM_ORDER_LINE = "SELECT OL_I_ID from Order_Line WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?";
     public static String GET_CUS_LIST_FROM_ITEM = "SELECT I_O_ID_LIST from Item WHERE I_ID = ?";
 
+
+
+
+
+
+    // -------------TOP BALANCE TRANSACTION ----------------------------------------------------------------------------
+    public static String GET_CUSTOMERS_ORDERED_BY_BALANCE = "SELECT C_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST, C_W_NAME, C_D_NAME from Customer_Balance WHERE C_W_ID = ? AND C_D_ID = ? ORDER BY C_BALANCE DESC LIMIT 10;";
+
+    // Indexes for Top Balance Transaction
+    public static final int T_C_ID_INDEX = 0;
+    public static final int T_C_BALANCE_INDEX = 1;
+    public static final int T_C_FIRST_INDEX = 2;
+    public static final int T_C_MIDDLE_INDEX = 3;
+    public static final int T_C_LAST_INDEX = 4;
+    public static final int T_C_W_NAME_INDEX = 5;
+    public static final int T_C_D_NAME_INDEX = 6;
 }
