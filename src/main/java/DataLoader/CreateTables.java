@@ -11,6 +11,7 @@ public class CreateTables {
         // Drop table if exists
         try {
             System.out.println("Drop tables");
+            session.execute("DROP MATERIALIZED VIEW IF EXISTS CS4224.Customer_Balance");
             session.execute(SchemaBuilder.dropTable("Warehouse").ifExists());
             session.execute(SchemaBuilder.dropTable("District").ifExists());
             session.execute(SchemaBuilder.dropTable("Customer").ifExists());
@@ -72,7 +73,7 @@ public class CreateTables {
                 addColumn("C_CREDIT", DataType.varchar()).
                 addColumn("C_CREDIT_LIM", DataType.decimal()).
                 addColumn("C_DISCOUNT", DataType.decimal()).
-                addColumn("C_BALANCE", DataType.decimal()). //ck TODO cannot do clustering keys on decimal, performance worse anyway
+                addColumn("C_BALANCE", DataType.decimal()).
                 addColumn("C_YTD_PAYMENT", DataType.cfloat()).
                 addColumn("C_PAYMENT_CNT", DataType.cint()).
                 addColumn("C_DELIVERY_CNT", DataType.cint()).
@@ -146,5 +147,13 @@ public class CreateTables {
                 addColumn("S_DATA", DataType.varchar());
         session.execute(stockSchemaStatement);
 
+        // Create materialised view for Customer Balance
+
+        System.out.println("Create materialised view for Customer_Balance");
+        String createCustomerBalanceView = "CREATE MATERIALIZED VIEW CS4224.Customer_Balance " +
+                "AS SELECT C_W_ID, C_D_ID, C_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST, C_W_NAME, C_D_NAME FROM CS4224.Customer " +
+                "WHERE C_W_ID IS NOT NULL and C_D_ID IS NOT NULL and C_ID IS NOT NULL and C_BALANCE IS NOT NULL and C_FIRST IS NOT NULL and C_MIDDLE IS NOT NULL and C_LAST IS NOT NULL and C_W_NAME IS NOT NULL and C_D_NAME IS NOT NULL " +
+                "PRIMARY KEY ((C_W_ID, C_D_ID), C_BALANCE, C_ID)";
+        session.execute(createCustomerBalanceView);
     }
 }
