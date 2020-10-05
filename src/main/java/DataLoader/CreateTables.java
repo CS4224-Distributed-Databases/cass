@@ -15,6 +15,7 @@ public class CreateTables {
             session.execute(SchemaBuilder.dropTable("District").ifExists());
             session.execute(SchemaBuilder.dropTable("Customer").ifExists());
             session.execute(SchemaBuilder.dropTable("Order_New").ifExists()); // Order is a reserved keyword
+            session.execute(SchemaBuilder.dropTable("Order_Small").ifExists());
             session.execute(SchemaBuilder.dropTable("Item").ifExists());
             session.execute(SchemaBuilder.dropTable("Order_Line").ifExists());
             session.execute(SchemaBuilder.dropTable("Stock").ifExists());
@@ -96,6 +97,22 @@ public class CreateTables {
                 addColumn("O_C_MIDDLE", DataType.varchar()). //from customer
                 addColumn("O_C_LAST", DataType.varchar()); //from customer
         session.execute(orderSchemaStatement);
+
+
+        // Order_Small - to have O_ID as the higher level clustering key for Popular Item transaction
+        // which does not have knowledge of the customerId
+        //TODO: Rmb to update all load data and xacts to update this smaller table too
+        System.out.println("Create Order_Small Table");
+        SchemaStatement orderSmallSchemaStatement = SchemaBuilder.createTable("Order_Small").
+                addClusteringColumn("O_ID", DataType.cint()).
+                addClusteringColumn("O_C_ID", DataType.cint()). // lower level clustering key
+                addPartitionKey("O_W_ID", DataType.cint()). //pk
+                addPartitionKey("O_D_ID", DataType.cint()). //pk
+                addColumn("O_ENTRY", DataType.timestamp()).
+                addColumn("O_C_FIRST", DataType.varchar()). //from customer
+                addColumn("O_C_MIDDLE", DataType.varchar()). //from customer
+                addColumn("O_C_LAST", DataType.varchar()); //from customer
+        session.execute(orderSmallSchemaStatement);
 
         // Item
         System.out.println("Create Item Table");
