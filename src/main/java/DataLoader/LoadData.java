@@ -222,7 +222,11 @@ public class LoadData {
         PreparedStatement insertPrepared = session.prepare(
                 "INSERT INTO Order_New (O_W_ID, O_D_ID, O_ID, O_C_ID, O_CARRIER_ID, O_OL_CNT, O_ALL_LOCAL, O_ENTRY, " +
                         "O_C_FIRST, O_C_MIDDLE, O_C_LAST) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        PreparedStatement insertPreparedForOrderSmall = session.prepare(
+                "INSERT INTO Order_Small (O_W_ID, O_D_ID, O_ID, O_C_ID, O_ENTRY, " +
+                        "O_C_FIRST, O_C_MIDDLE, O_C_LAST) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         BoundStatement insertBound;
+        BoundStatement insertBoundForOrderSmall;
 
         String line;
         while ((line = br.readLine()) != null) {
@@ -263,10 +267,12 @@ public class LoadData {
                 }
             }
 
-            insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), Integer.parseInt(row[3]), Integer.parseInt(row[4]),
+            insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), Integer.parseInt(row[3]), !row[4].equals("null") ? Integer.parseInt(row[4]) : null,
                     DatatypeConverter.parseDecimal(row[5]), DatatypeConverter.parseDecimal(row[6]), Timestamp.from(Instant.from(getFormatter().parse(row[7]))), firstName, middleName, lastName);
-
+            insertBoundForOrderSmall = insertPreparedForOrderSmall.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), Integer.parseInt(row[3]),
+                    Timestamp.from(Instant.from(getFormatter().parse(row[7]))), firstName, middleName, lastName);
             session.execute(insertBound);
+            session.execute(insertBoundForOrderSmall);
         }
     }
 
