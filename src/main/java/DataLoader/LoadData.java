@@ -29,7 +29,7 @@ public class LoadData {
     private static Map<Integer, ArrayList<Integer>> itemid_to_orderNumbers;
     private static Map<Integer, ArrayList<String>> itemid_to_customerIdentifier;
 
-    private static final int limit = 1000;
+    private static final int limit = -1;
     private static int i = 0;
     private static Session session;
     private static final String DIRECTORY = "src/main/java/DataSource/data-files/";
