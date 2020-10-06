@@ -53,12 +53,12 @@ public class Main {
                         .getProtocolOptions()
                         .getProtocolVersion());
 
-        // (2) Create Tables
-        new CreateTables(session);
-
-        // (3) Load Data and pass session
-        LoadData a = new LoadData(session);
-        a.executeLoadData();
+//        // (2) Create Tables
+//        new CreateTables(session);
+//
+//        // (3) Load Data and pass session
+//        LoadData a = new LoadData(session);
+//        a.executeLoadData();
 
         // (4) Take in inputs...parser from stdin redirection.
         HashMap<String, PreparedStatement> insertPrepared = new HashMap<>();
