@@ -4,6 +4,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.BuiltStatement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 
 // FILE NOT IN USE
@@ -18,7 +19,7 @@ public class QueryBuilderDelete {
         Session session = cluster.connect("hotel");
 
         // create a Hotel ID
-        String id="AZ123";
+        String id = "AZ123";
 
         // build an INSERT statement
         BuiltStatement hotelInsertBuilt = QueryBuilder.insertInto("hotels").

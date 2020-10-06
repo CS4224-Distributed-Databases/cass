@@ -75,7 +75,7 @@ public class Main {
             String inputLine = sc.nextLine();
             BaseTransaction transaction = null;
 
-            if(inputLine.startsWith("N")) {
+            if (inputLine.startsWith("N")) {
                 transaction = new NewOrderTransaction(session, insertPrepared);
             } else if (inputLine.startsWith("P")) {
                 transaction = new PaymentTransaction(session, insertPrepared);
@@ -105,12 +105,12 @@ public class Main {
         }
         endTime = System.nanoTime();
         long timeElapsed = endTime - startTime;
-        double timeElapsedInSeconds = timeElapsed/convertSecondsDenom;
+        double timeElapsedInSeconds = timeElapsed / convertSecondsDenom;
         Collections.sort(latencies);
-        double averageLatencyInMs = getAverageLatency(latencies)/convertMilliSecondsDenom;
-        double medianLatencyInMs = getMedianLatency(latencies)/convertMilliSecondsDenom;
-        double percentileLatency95InMs = getPercentileLatency(latencies, 95)/convertMilliSecondsDenom;
-        double percentileLatency99InMs = getPercentileLatency(latencies, 99)/convertMilliSecondsDenom;
+        double averageLatencyInMs = getAverageLatency(latencies) / convertMilliSecondsDenom;
+        double medianLatencyInMs = getMedianLatency(latencies) / convertMilliSecondsDenom;
+        double percentileLatency95InMs = getPercentileLatency(latencies, 95) / convertMilliSecondsDenom;
+        double percentileLatency99InMs = getPercentileLatency(latencies, 99) / convertMilliSecondsDenom;
 
         printPerformance(numOfTransactions, timeElapsedInSeconds, averageLatencyInMs, medianLatencyInMs, percentileLatency95InMs, percentileLatency99InMs);
 
@@ -119,18 +119,18 @@ public class Main {
 
     private static double getAverageLatency(List<Long> latencies) {
         double sum = 0.0;
-        for(Long latency: latencies) {
+        for (Long latency : latencies) {
             sum += latency;
         }
-        return sum/latencies.size();
+        return sum / latencies.size();
     }
 
     private static double getMedianLatency(List<Long> latencies) {
         int length = latencies.size();
         double medianValue;
-        int index = length/2;
-        if (length%2 == 0) {
-            medianValue = latencies.get(index) + (latencies.get(index+1) - latencies.get(index))/2.0; //avoid overflow
+        int index = length / 2;
+        if (length % 2 == 0) {
+            medianValue = latencies.get(index) + (latencies.get(index + 1) - latencies.get(index)) / 2.0; //avoid overflow
         } else {
             medianValue = latencies.get(index);
         }
@@ -139,7 +139,7 @@ public class Main {
 
     private static long getPercentileLatency(List<Long> latencies, int percentile) {
         int length = latencies.size();
-        int index = length*(percentile/100);
+        int index = length * (percentile / 100);
         return latencies.get(index);
     }
 
@@ -147,7 +147,7 @@ public class Main {
         System.out.println("---------------- Performance Output ----------------");
         System.out.println("Number of executed transactions: " + numOfTransactions);
         System.out.println(String.format("Total transaction execution time (sec): %.2f", timeElapsedInSeconds));
-        System.out.println(String.format("Transaction throughput: %.2f", numOfTransactions/timeElapsedInSeconds));
+        System.out.println(String.format("Transaction throughput: %.2f", numOfTransactions / timeElapsedInSeconds));
         System.out.println(String.format("Average transaction latency (ms): %.2f", averageLatencyInMs));
         System.out.println(String.format("Median transaction latency (ms): %.2f", medianLatencyInMs));
         System.out.println(String.format("95th percentile transaction latency (ms): %.2f", percentileLatency95InMs));
@@ -155,7 +155,7 @@ public class Main {
         System.out.println("----------------------------------------------------");
     }
 
-    public static void close(){
+    public static void close() {
         // close and exit
         cluster.close();
         System.exit(0);

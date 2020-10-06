@@ -27,12 +27,12 @@ public class LoadData {
     private static Map<Integer, String> warehouseid_to_warehousetax;
     private static Map<Integer, ArrayList<String>> customerid_to_customernames;
     private static Map<Integer, ArrayList<Integer>> itemid_to_orderNumbers;
-    private static  Map<Integer, ArrayList<String>> itemid_to_customerIdentifier;
+    private static Map<Integer, ArrayList<String>> itemid_to_customerIdentifier;
 
     private static final int limit = 1000;
     private static int i = 0;
     private static Session session;
-    private static String DIRECTORY = "src/main/java/DataSource/data-files/";
+    private static final String DIRECTORY = "src/main/java/DataSource/data-files/";
 
     public LoadData(Session session) {
         this.itemid_to_itemname = new HashMap<>();
@@ -51,7 +51,7 @@ public class LoadData {
     // At the same time we also need to loop through orderline and order tables for load item to create the list I_O_ID_LIST.
     // Hence, there is a cycle.
     // So Item is split into 2 parts of execution.
-    public void executeLoadData() throws Exception{
+    public void executeLoadData() throws Exception {
         loadWarehouse();
         System.out.println("Finish Loading Warehouse Data");
         loadDistrict();
@@ -128,7 +128,7 @@ public class LoadData {
 
     public static void loadCustomer() throws IOException {
         File file = new File(DIRECTORY + "customer.csv");
-        BufferedReader br =  new BufferedReader(new FileReader(file));
+        BufferedReader br = new BufferedReader(new FileReader(file));
 
         // create parameterized INSERT statement
         PreparedStatement insertPrepared = session.prepare(
@@ -154,7 +154,7 @@ public class LoadData {
 
             insertBound = insertPrepared.bind(Integer.parseInt(row[0]), Integer.parseInt(row[1]), Integer.parseInt(row[2]), row[3], row[4], row[5],
                     row[6], row[7], row[8], row[9], row[10], row[11], Timestamp.from(Instant.from(getFormatter().parse(row[12]))), row[13], DatatypeConverter.parseDecimal(row[14]),
-                    DatatypeConverter.parseDecimal(row[15]),  DatatypeConverter.parseDecimal(row[16]),  Float.parseFloat(row[17]), Integer.parseInt(row[18]),
+                    DatatypeConverter.parseDecimal(row[15]), DatatypeConverter.parseDecimal(row[16]), Float.parseFloat(row[17]), Integer.parseInt(row[18]),
                     Integer.parseInt(row[19]), row[20], districtName, warehouseName);
 
             session.execute(insertBound);
@@ -244,21 +244,21 @@ public class LoadData {
             String lastName = "";
 
             // Need this check because we are currently loading data with limit
-            if(cust.size()!=0){
+            if (cust.size() != 0) {
                 firstName = cust.get(0);
                 middleName = cust.get(1);
                 lastName = cust.get(2);
             }
 
             // Need to do this for loadData part 2.
-            for (Map.Entry<Integer, ArrayList<Integer>> entry: itemid_to_orderNumbers.entrySet()){
+            for (Map.Entry<Integer, ArrayList<Integer>> entry : itemid_to_orderNumbers.entrySet()) {
                 ArrayList<Integer> orders = entry.getValue();
                 Integer item = entry.getKey();
 
                 // We check the Map value entries for those with the current order number
                 // Then we get their corresponding item id
                 // And append the current customer name to the map itemid_to_customerIdentifier
-                if(orders.contains(Integer.parseInt(row[2]))){
+                if (orders.contains(Integer.parseInt(row[2]))) {
                     ArrayList<String> allCustomers = itemid_to_customerIdentifier.getOrDefault(item, new ArrayList<>());
                     // Current Customer's identifier comprise of: O_W_ID, O_D_ID, O_C_ID
                     String currentCus = row[0] + " " + row[1] + " " + row[3];
