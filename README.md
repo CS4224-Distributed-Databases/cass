@@ -24,10 +24,13 @@ The bulk of our code are in the folder src -> main -> java
 - Clone this project into an IDLE of your choice
 - Configure Maven to handle the dependencies required
 
+(for xcnc servers) //TODO use Apache Cassandra 3.11.6 as stated in project instead of the current 3.11.8
+1) Ensure that you have opened 5 terminals and ./start-cassandra.sh on all of them
+2) On your local computer on Intellij, run Main.java. This will createschema(), loaddata(), and executexperiment().
+
 (for localhost)
 - To create cluster with 3 nodes on local cassandra
 `ccm create local -v 2.0.5 -n 3 -s`
-//TODO use Apache Cassandra 3.11.6 as stated in project, not sure if works for this version
 
 - Launch cqlsh
 `ccm node1 cqlsh`
