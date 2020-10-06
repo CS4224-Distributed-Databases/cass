@@ -15,7 +15,12 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         // (1) Initialise Cluster
-        cluster = Cluster.builder().addContactPoint("127.0.0.1")
+        cluster = Cluster.builder()
+                .addContactPoint("192.168.48.169")
+                .addContactPoint("192.168.48.170")
+                .addContactPoint("192.168.48.171")
+                .addContactPoint("192.168.48.172")
+                .addContactPoint("192.168.48.173")
                 .build();
 
         cluster.init();
