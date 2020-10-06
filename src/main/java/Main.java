@@ -81,7 +81,7 @@ public class Main {
             } else if (inputLine.startsWith("S")) {
                 //transaction = new StockLevelTransaction(session, insertPrepared);
             } else if (inputLine.startsWith("I")) {
-                //transaction = new PopularItemTransaction(session, insertPrepared);
+                transaction = new PopularItemTransaction(session, insertPrepared);
             } else if (inputLine.startsWith("T")) {
                 transaction = new TopBalanceTransaction(session, insertPrepared);
             } else if (inputLine.startsWith("R")) {
