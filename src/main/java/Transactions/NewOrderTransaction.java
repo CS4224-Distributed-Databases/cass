@@ -57,6 +57,7 @@ public class NewOrderTransaction extends BaseTransaction {
         prepareStatement("N_GET_ITEM_INFO", CqlQueries.N_GET_ITEM_INFO);
         prepareStatement("N_CREATE_ORDER_LINE", CqlQueries.N_CREATE_ORDER_LINE);
         prepareStatement("N_CREATE_ORDER", CqlQueries.N_CREATE_ORDER);
+        prepareStatement("N_CREATE_ORDER_SMALL", CqlQueries.N_CREATE_ORDER_SMALL);
         prepareStatement("N_UPDATE_ITEM_CUSTOMER_LIST", CqlQueries.N_UPDATE_ITEM_CUSTOMER_LIST);
 
         List<String> itemNames = new ArrayList<String>();
@@ -131,9 +132,10 @@ public class NewOrderTransaction extends BaseTransaction {
         //4. Create Order
         // add C_FIRST, C_MIDDLE_C_LAST from customer too
         // brought to the end after creating all order lines to avoid an extra iteration for checking if warehouses are local
-        // TODO: check if string to represent timestamp for O_ENTRY_D works
+        // TODO: check if string to represent timestamp for O_ENTRY works
         String entryDate = TimeHelper.formatDate(new Date());
         executeQuery("N_CREATE_ORDER", orderNumber, customerDistrictId, customerWarehouseId, customerId, entryDate, numOfItems, isAllLocal, customerFirstName, customerMiddleName, customerLastName);
+        executeQuery("N_CREATE_ORDER_SMALL", orderNumber, customerDistrictId, customerWarehouseId, customerId, entryDate, customerFirstName, customerMiddleName, customerLastName);
 
         //4. Print output
         System.out.println(String.format(
