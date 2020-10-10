@@ -61,6 +61,8 @@ public class Main {
 //        a.executeLoadData();
 
         // (4) Take in inputs...parser from stdin redirection.
+        String consistencyLevel = args[0];
+
         HashMap<String, PreparedStatement> insertPrepared = new HashMap<>();
         Scanner sc = new Scanner(System.in);
         int numOfTransactions = 0;
@@ -70,27 +72,29 @@ public class Main {
         long transactionEnd;
         List<Long> latencies = new ArrayList<>();
 
+        System.out.println("Start executing transactions with consistency level: "+ consistencyLevel);
+
         startTime = System.nanoTime();
         while (sc.hasNext()) {
             String inputLine = sc.nextLine();
             BaseTransaction transaction = null;
 
             if (inputLine.startsWith("N")) {
-                transaction = new NewOrderTransaction(session, insertPrepared);
+                transaction = new NewOrderTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("P")) {
-                transaction = new PaymentTransaction(session, insertPrepared);
+                transaction = new PaymentTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("D")) {
-                transaction = new DeliveryTransaction(session, insertPrepared);
+                transaction = new DeliveryTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("O")) {
-                //transaction = new OrderStatusTransaction(session, insertPrepared);
+                //transaction = new OrderStatusTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("S")) {
-                //transaction = new StockLevelTransaction(session, insertPrepared);
+                //transaction = new StockLevelTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("I")) {
-                transaction = new PopularItemTransaction(session, insertPrepared);
+                transaction = new PopularItemTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("T")) {
-                transaction = new TopBalanceTransaction(session, insertPrepared);
+                transaction = new TopBalanceTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("R")) {
-                transaction = new RelatedCustomersTransaction(session, insertPrepared);
+                transaction = new RelatedCustomersTransaction(session, insertPrepared, consistencyLevel);
             }
 
             if (transaction != null) {
@@ -144,15 +148,15 @@ public class Main {
     }
 
     private static void printPerformance(int numOfTransactions, double timeElapsedInSeconds, double averageLatencyInMs, double medianLatencyInMs, double percentileLatency95InMs, double percentileLatency99InMs) {
-        System.out.println("---------------- Performance Output ----------------");
-        System.out.println("Number of executed transactions: " + numOfTransactions);
-        System.out.println(String.format("Total transaction execution time (sec): %.2f", timeElapsedInSeconds));
-        System.out.println(String.format("Transaction throughput: %.2f", numOfTransactions / timeElapsedInSeconds));
-        System.out.println(String.format("Average transaction latency (ms): %.2f", averageLatencyInMs));
-        System.out.println(String.format("Median transaction latency (ms): %.2f", medianLatencyInMs));
-        System.out.println(String.format("95th percentile transaction latency (ms): %.2f", percentileLatency95InMs));
-        System.out.println(String.format("99th percentile transaction latency (ms): %.2f", percentileLatency99InMs));
-        System.out.println("----------------------------------------------------");
+        System.err.println("---------------- Performance Output ----------------");
+        System.err.println("Number of executed transactions: " + numOfTransactions);
+        System.err.println(String.format("Total transaction execution time (sec): %.2f", timeElapsedInSeconds));
+        System.err.println(String.format("Transaction throughput: %.2f", numOfTransactions / timeElapsedInSeconds));
+        System.err.println(String.format("Average transaction latency (ms): %.2f", averageLatencyInMs));
+        System.err.println(String.format("Median transaction latency (ms): %.2f", medianLatencyInMs));
+        System.err.println(String.format("95th percentile transaction latency (ms): %.2f", percentileLatency95InMs));
+        System.err.println(String.format("99th percentile transaction latency (ms): %.2f", percentileLatency99InMs));
+        System.err.println("----------------------------------------------------");
     }
 
     public static void close() {

@@ -13,8 +13,8 @@ import java.util.*;
 public class TopBalanceTransaction extends BaseTransaction {
     private static final int count = 10;
 
-    public TopBalanceTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
-        super(session, insertPrepared);
+    public TopBalanceTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared, String consistencyType) {
+        super(session, insertPrepared, consistencyType);
     }
 
     @Override

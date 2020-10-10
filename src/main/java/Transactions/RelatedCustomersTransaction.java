@@ -19,8 +19,8 @@ public class RelatedCustomersTransaction extends BaseTransaction {
     private int districtID;
     private int customerID;
 
-    public RelatedCustomersTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
-        super(session, insertPrepared);
+    public RelatedCustomersTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared, String consistencyType) {
+        super(session, insertPrepared, consistencyType);
     }
 
     @Override
