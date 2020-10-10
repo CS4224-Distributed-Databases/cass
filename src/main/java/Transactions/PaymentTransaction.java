@@ -82,14 +82,14 @@ public class PaymentTransaction extends BaseTransaction {
 
         System.out.println(String.format(
                 "2. Warehouse Address: (%s, %s, %s, %s, %s)",
-                customerInfo.getString(CqlQueries.PAYMENT_W_STREET_1_INDEX), customerInfo.getString(CqlQueries.PAYMENT_W_STREET_2_INDEX), customerInfo.getString(CqlQueries.PAYMENT_W_CITY_INDEX),
-                customerInfo.getString(CqlQueries.PAYMENT_W_STATE_INDEX), customerInfo.getString(CqlQueries.PAYMENT_W_ZIP_INDEX)
+                warehouseInfo.getString(CqlQueries.PAYMENT_W_STREET_1_INDEX), warehouseInfo.getString(CqlQueries.PAYMENT_W_STREET_2_INDEX), warehouseInfo.getString(CqlQueries.PAYMENT_W_CITY_INDEX),
+                warehouseInfo.getString(CqlQueries.PAYMENT_W_STATE_INDEX), warehouseInfo.getString(CqlQueries.PAYMENT_W_ZIP_INDEX)
         ));
 
         System.out.println(String.format(
                 "3. District Address: (%s, %s, %s, %s, %s)",
-                customerInfo.getString(CqlQueries.PAYMENT_D_STREET_1_INDEX), customerInfo.getString(CqlQueries.PAYMENT_D_STREET_2_INDEX), customerInfo.getString(CqlQueries.PAYMENT_D_CITY_INDEX),
-                customerInfo.getString(CqlQueries.PAYMENT_D_STATE_INDEX), customerInfo.getString(CqlQueries.PAYMENT_D_ZIP_INDEX)
+                districtInfo.getString(CqlQueries.PAYMENT_D_STREET_1_INDEX), districtInfo.getString(CqlQueries.PAYMENT_D_STREET_2_INDEX), districtInfo.getString(CqlQueries.PAYMENT_D_CITY_INDEX),
+                districtInfo.getString(CqlQueries.PAYMENT_D_STATE_INDEX), districtInfo.getString(CqlQueries.PAYMENT_D_ZIP_INDEX)
         ));
 
         System.out.println(String.format("4. Payment: %.2f", payment));
