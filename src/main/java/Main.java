@@ -148,15 +148,15 @@ public class Main {
     }
 
     private static void printPerformance(int numOfTransactions, double timeElapsedInSeconds, double averageLatencyInMs, double medianLatencyInMs, double percentileLatency95InMs, double percentileLatency99InMs) {
-        System.out.println("---------------- Performance Output ----------------");
-        System.out.println("Number of executed transactions: " + numOfTransactions);
-        System.out.println(String.format("Total transaction execution time (sec): %.2f", timeElapsedInSeconds));
-        System.out.println(String.format("Transaction throughput: %.2f", numOfTransactions / timeElapsedInSeconds));
-        System.out.println(String.format("Average transaction latency (ms): %.2f", averageLatencyInMs));
-        System.out.println(String.format("Median transaction latency (ms): %.2f", medianLatencyInMs));
-        System.out.println(String.format("95th percentile transaction latency (ms): %.2f", percentileLatency95InMs));
-        System.out.println(String.format("99th percentile transaction latency (ms): %.2f", percentileLatency99InMs));
-        System.out.println("----------------------------------------------------");
+        System.err.println("---------------- Performance Output ----------------");
+        System.err.println("Number of executed transactions: " + numOfTransactions);
+        System.err.println(String.format("Total transaction execution time (sec): %.2f", timeElapsedInSeconds));
+        System.err.println(String.format("Transaction throughput: %.2f", numOfTransactions / timeElapsedInSeconds));
+        System.err.println(String.format("Average transaction latency (ms): %.2f", averageLatencyInMs));
+        System.err.println(String.format("Median transaction latency (ms): %.2f", medianLatencyInMs));
+        System.err.println(String.format("95th percentile transaction latency (ms): %.2f", percentileLatency95InMs));
+        System.err.println(String.format("99th percentile transaction latency (ms): %.2f", percentileLatency99InMs));
+        System.err.println("----------------------------------------------------");
     }
 
     public static void close() {
