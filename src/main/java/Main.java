@@ -61,6 +61,8 @@ public class Main {
 //        a.executeLoadData();
 
         // (4) Take in inputs...parser from stdin redirection.
+        String consistencyLevel = args[0];
+
         HashMap<String, PreparedStatement> insertPrepared = new HashMap<>();
         Scanner sc = new Scanner(System.in);
         int numOfTransactions = 0;
@@ -70,27 +72,29 @@ public class Main {
         long transactionEnd;
         List<Long> latencies = new ArrayList<>();
 
+        System.out.println("Start executing transactions with consistency level: "+ consistencyLevel);
+
         startTime = System.nanoTime();
         while (sc.hasNext()) {
             String inputLine = sc.nextLine();
             BaseTransaction transaction = null;
 
             if (inputLine.startsWith("N")) {
-                transaction = new NewOrderTransaction(session, insertPrepared);
+                transaction = new NewOrderTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("P")) {
-                transaction = new PaymentTransaction(session, insertPrepared);
+                transaction = new PaymentTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("D")) {
-                transaction = new DeliveryTransaction(session, insertPrepared);
+                transaction = new DeliveryTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("O")) {
-                //transaction = new OrderStatusTransaction(session, insertPrepared);
+                //transaction = new OrderStatusTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("S")) {
-                //transaction = new StockLevelTransaction(session, insertPrepared);
+                //transaction = new StockLevelTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("I")) {
-                transaction = new PopularItemTransaction(session, insertPrepared);
+                transaction = new PopularItemTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("T")) {
-                transaction = new TopBalanceTransaction(session, insertPrepared);
+                transaction = new TopBalanceTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("R")) {
-                transaction = new RelatedCustomersTransaction(session, insertPrepared);
+                transaction = new RelatedCustomersTransaction(session, insertPrepared, consistencyLevel);
             }
 
             if (transaction != null) {

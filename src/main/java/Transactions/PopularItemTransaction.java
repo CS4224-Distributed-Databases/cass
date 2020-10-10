@@ -16,8 +16,8 @@ public class PopularItemTransaction extends BaseTransaction {
     private int districtId;
     private int numOfLastOrders;
 
-    public PopularItemTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
-        super(session, insertPrepared);
+    public PopularItemTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared, String consistencyType) {
+        super(session, insertPrepared, consistencyType);
     }
 
     @Override

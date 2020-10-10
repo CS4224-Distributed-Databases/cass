@@ -16,8 +16,8 @@ public class PaymentTransaction extends BaseTransaction {
     private int customerId;
     private BigDecimal payment;
 
-    public PaymentTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
-        super(session, insertPrepared);
+    public PaymentTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared, String consistencyType) {
+        super(session, insertPrepared, consistencyType);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class PaymentTransaction extends BaseTransaction {
         prepareStatement("P_GET_CUSTOMER_INFO", CqlQueries.P_GET_CUSTOMER_INFO);
         prepareStatement("P_UPDATE_CUSTOMER_PAYMENT", CqlQueries.P_UPDATE_CUSTOMER_PAYMENT);
 
-        System.out.println(customerWarehouseId + " "+ customerDistrictId + " "+ customerId + " " + payment);
+//        System.out.println(customerWarehouseId + " "+ customerDistrictId + " "+ customerId + " " + payment);
 
         // 1. Get and Update Warehouse info
         Row warehouseInfo = executeQuery("P_GET_WAREHOUSE_INFO", customerWarehouseId).get(0);

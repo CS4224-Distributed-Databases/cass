@@ -19,8 +19,8 @@ public class DeliveryTransaction extends BaseTransaction {
     private int warehouseID;
     private int carrierID;
 
-    public DeliveryTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
-        super(session, insertPrepared);
+    public DeliveryTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared, String consistencyType) {
+        super(session, insertPrepared, consistencyType);
     }
 
     @Override

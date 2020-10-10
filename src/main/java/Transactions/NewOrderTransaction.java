@@ -19,8 +19,8 @@ public class NewOrderTransaction extends BaseTransaction {
     private List<Integer> supplierWarehouses;
     private List<Integer> quantities;
 
-    public NewOrderTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared) {
-        super(session, insertPrepared);
+    public NewOrderTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared, String consistencyType) {
+        super(session, insertPrepared, consistencyType);
     }
 
     @Override
