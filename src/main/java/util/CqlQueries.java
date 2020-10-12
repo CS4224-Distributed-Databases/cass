@@ -75,6 +75,35 @@ public class CqlQueries {
     public static final int PAYMENT_C_CREDIT_LIM_INDEX = 14;
     public static final int PAYMENT_C_DISCOUNT_INDEX = 15;
 
+    // -------------Order status TRANSACTION ----------------------------------------------------------------------------
+    public static final String O_GET_CUSTOMER_INFO = "SELECT C_BALANCE, C_FIRST, C_MIDDLE, C_LAST FROM Customer WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
+    public static final String O_GET_CUSTOMER_LAST_ORDER = "select o_id, o_carrier_id, o_entry from order_small where o_w_id= ? and o_d_id= ? and o_c_id= ? order by o_id desc limit 1 allow filtering";
+    public static final String O_GET_LAST_ORDER_DETAILS = "select ol_i_id, ol_supply_w_id, ol_quantity, ol_amount, ol_delivery_d from order_line where ol_w_id= ? and ol_d_id= ? and ol_o_id= ?";
+
+    // Indexes for Order status Transaction
+    public static final int ORDER_C_BALANCE_INDEX = 0;
+    public static final int ORDER_C_FIRST_INDEX = 1;
+    public static final int ORDER_C_MIDDLE_INDEX = 2;
+    public static final int ORDER_C_LAST_INDEX = 3;
+    public static final int ORDER_O_ORDER_ID_INDEX = 0;
+    public static final int ORDER_O_CARRIER_ID_INDEX = 1;
+    public static final int ORDER_O_ENTRY_INDEX = 2;
+    public static final int ORDER_OL_ITEM_ID_INDEX = 0;
+    public static final int ORDER_OL_SUPPLY_WAREHOUSE_ID_INDEX = 1;
+    public static final int ORDER_OL_QUANTITY_INDEX = 2;
+    public static final int ORDER_OL_AMOUNT_INDEX = 3;
+    public static final int ORDER_OL_DELIVERY_DATE_INDEX = 4;
+
+    // -------------Stock level TRANSACTION ----------------------------------------------------------------------------
+    public static final String S_GET_DISTRICT = "SELECT d_next_o_id FROM district where d_w_id = ? AND d_id = ?";
+    public static final String S_GET_LAST_L_ORDERS = "select ol_i_id from order_line where ol_w_id= ? and ol_d_id= ? and ol_o_id>= ? and ol_o_id<? ALLOW FILTERING";
+    public static final String S_GET_STOCK_ITEMS = "select s_quantity from stock where s_w_id = ? and s_i_id = ?";
+
+    // Indexes for Stock Level Transaction
+    public static final int STOCK_D_NEXT_OID_INDEX = 0;
+    public static final int STOCK_OL_OID_INDEX = 0;
+    public static final int STOCK_QUANTITY_INDEX = 0;
+
     // -------------DELIVERY TRANSACTION ----------------------------------------------------------------------------
     public static String YET_DELIVERED_ORDER
             = "SELECT * FROM Order_New WHERE O_W_ID = ? AND O_D_ID = ? LIMIT 1;";
