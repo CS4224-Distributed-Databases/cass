@@ -109,6 +109,7 @@ public class CreateTables {
                 addClusteringColumn("O_C_ID", DataType.cint()). // lower level clustering key
                 addPartitionKey("O_W_ID", DataType.cint()). //pk
                 addPartitionKey("O_D_ID", DataType.cint()). //pk
+                addColumn("O_CARRIER_ID", DataType.cint()).
                 addColumn("O_ENTRY", DataType.timestamp()).
                 addColumn("O_C_FIRST", DataType.varchar()). //from customer
                 addColumn("O_C_MIDDLE", DataType.varchar()). //from customer
