@@ -91,7 +91,6 @@ public class PopularItemTransaction extends BaseTransaction {
                     numOfOrdersPerItem.put(itemId, numOfOrders+1);
                 }
             }
-            System.out.println("candidatePopularItems.size() "+ candidatePopularItems.size());
             popularItemsPerOrder.put(orderNum, candidatePopularItems);
         }
 
@@ -103,8 +102,13 @@ public class PopularItemTransaction extends BaseTransaction {
         HashSet<ItemData> distinctPopularItems = new HashSet<>(); // for calculating percentages later
 
         for (int orderNum = nextOrderNum - numOfLastOrders; orderNum < nextOrderNum; orderNum++) {
+            if (!orderInfoMap.containsKey(orderNum)) {
+                continue;
+            }
             Row orderInfo = orderInfoMap.get(orderNum);
-            String entryDate = TimeHelper.formatDate(orderInfo.getTimestamp(CqlQueries.I_O_ENTRY_INDEX));
+            String entryDate = (orderInfo.getTimestamp(CqlQueries.I_O_ENTRY_INDEX) != null)
+                    ? TimeHelper.formatDate(orderInfo.getTimestamp(CqlQueries.I_O_ENTRY_INDEX))
+                    : "null";
             System.out.println(String.format("\t3.1 Order number: %d, Entry date: %s", orderNum, entryDate));
             System.out.println(String.format("\t3.2 Customer: (%s, %s, %s)", orderInfo.getString(CqlQueries.I_O_C_FIRST_INDEX), orderInfo.getString(CqlQueries.I_O_C_MIDDLE_INDEX), orderInfo.getString(CqlQueries.I_O_C_LAST_INDEX)));
             System.out.println("\t3.3 Popular Items: ");
