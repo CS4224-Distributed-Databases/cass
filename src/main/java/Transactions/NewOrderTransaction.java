@@ -6,6 +6,7 @@ import com.datastax.driver.core.Session;
 import util.CqlQueries;
 import util.TimeHelper;
 
+import javax.xml.bind.DatatypeConverter;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -17,7 +18,7 @@ public class NewOrderTransaction extends BaseTransaction {
 
     private List<Integer> itemNumbers;
     private List<Integer> supplierWarehouses;
-    private List<Integer> quantities;
+    private List<BigDecimal> quantities;
 
     public NewOrderTransaction(Session session, HashMap<String, PreparedStatement> insertPrepared, String consistencyType) {
         super(session, insertPrepared, consistencyType);
@@ -35,13 +36,13 @@ public class NewOrderTransaction extends BaseTransaction {
 
         itemNumbers = new ArrayList<Integer>();
         supplierWarehouses = new ArrayList<Integer>();
-        quantities = new ArrayList<Integer>();
-        for(int i = 1; i <= numOfItems; i++) {
+        quantities = new ArrayList<BigDecimal>();
+        for(int i = 0; i < numOfItems; i++) {
             String nextLine = sc.nextLine();
             String[] itemInput =  nextLine.split(",");
             itemNumbers.add(Integer.parseInt(itemInput[0]));
             supplierWarehouses.add(Integer.parseInt(itemInput[1]));
-            quantities.add(Integer.parseInt(itemInput[2]));
+            quantities.add(DatatypeConverter.parseDecimal(itemInput[2]));
         }
     }
 
@@ -62,7 +63,7 @@ public class NewOrderTransaction extends BaseTransaction {
 
         List<String> itemNames = new ArrayList<String>();
         List<BigDecimal> orderLineAmounts = new ArrayList<BigDecimal>();
-        List<Integer> adjustedQuantities = new ArrayList<Integer>();
+        List<BigDecimal> adjustedQuantities = new ArrayList<BigDecimal>();
 
         // 1. Get and update District Info
         Row districtInfo = executeQuery("N_GET_DISTRICT_INFO", customerWarehouseId, customerDistrictId).get(0);
@@ -70,22 +71,22 @@ public class NewOrderTransaction extends BaseTransaction {
         executeQuery("N_UPDATE_DISTRICT_NEXT_O_ID", orderNumber + 1, customerWarehouseId, customerDistrictId);
 
         BigDecimal totalAmount = new BigDecimal(0);
-        int isAllLocal = 1;
+        BigDecimal isAllLocal = BigDecimal.ONE;
 
         // 2. Create Order line for each item
-        for(int i = 1; i <= numOfItems; i++) {
+        for(int i = 0; i < numOfItems; i++) {
             int itemNumber = itemNumbers.get(i);
             int supplierWarehouse = supplierWarehouses.get(i);
-            int quantity = quantities.get(i);
+            BigDecimal quantity = quantities.get(i);
 
             // 2.1 get updated quantity and update stock
             String zeroAppendedDistrictId = (customerDistrictId%10 == 0) ? String.valueOf(customerDistrictId) : "0" + customerDistrictId;
             String sDistrictNum = "S_DIST_" + zeroAppendedDistrictId;
             Row stockInfo = executeQuery("N_GET_STOCK_INFO", supplierWarehouse, itemNumber).get(0);
-            int stockQuantity = stockInfo.getInt("S_QUANTITY");
-            int adjustedQuantity = stockQuantity - quantity;
-            if (adjustedQuantity < 10) {
-                adjustedQuantity += 100;
+            BigDecimal stockQuantity = stockInfo.getDecimal("S_QUANTITY");
+            BigDecimal adjustedQuantity = stockQuantity.subtract(quantity);
+            if (adjustedQuantity.compareTo(new BigDecimal(10)) < 0) {
+                adjustedQuantity = adjustedQuantity.add(new BigDecimal(100));
             }
             adjustedQuantities.add(adjustedQuantity);
 
@@ -94,14 +95,14 @@ public class NewOrderTransaction extends BaseTransaction {
             int remoteCount = stockInfo.getInt("S_REMOTE_CNT");
             int newRemoteCount = remoteCount;
             if (supplierWarehouse != customerWarehouseId) {
-                isAllLocal = 0;
+                isAllLocal = BigDecimal.ZERO;
                 newRemoteCount += 1;
             }
             executeQuery("N_UPDATE_STOCK_QUANTITY",
                     adjustedQuantity, stockYtd.add(BigDecimal.ONE), orderCount + 1, newRemoteCount, supplierWarehouse, itemNumber);
             Row itemInfo = executeQuery("N_GET_ITEM_INFO", itemNumber).get(0);
             BigDecimal itemPrice = itemInfo.getDecimal(CqlQueries.N_I_PRICE_INDEX);
-            BigDecimal itemAmount = itemPrice.multiply(new BigDecimal(quantity));
+            BigDecimal itemAmount = itemPrice.multiply(quantity);
             totalAmount = totalAmount.add(itemAmount);
             orderLineAmounts.add(itemAmount);
             String itemName = itemInfo.getString(CqlQueries.N_I_NAME_INDEX);
@@ -111,11 +112,13 @@ public class NewOrderTransaction extends BaseTransaction {
             // add I_NAME from customer too
             String sDistInfo = stockInfo.getString(sDistrictNum);
             executeQuery("N_CREATE_ORDER_LINE",
-                    orderNumber, customerDistrictId, customerWarehouseId, i, itemNumber, supplierWarehouse, quantity, itemAmount, sDistInfo, itemName);
+                    orderNumber, customerDistrictId, customerWarehouseId, i+1, itemNumber, supplierWarehouse, quantity, itemAmount, sDistInfo, itemName);
 
             //2.3 Update item's customer list
             String customerFullId = customerWarehouseId + " " + customerDistrictId + " " + customerId;
-            executeQuery("N_UPDATE_ITEM_CUSTOMER_LIST", customerFullId, itemNumber);
+            List<String> listToAppend = new ArrayList<>();
+            listToAppend.add(customerFullId);
+            executeQuery("N_UPDATE_ITEM_CUSTOMER_LIST", listToAppend, itemNumber);
         }
 
         //3. compute total amount
@@ -132,9 +135,9 @@ public class NewOrderTransaction extends BaseTransaction {
         //4. Create Order
         // add C_FIRST, C_MIDDLE_C_LAST from customer too
         // brought to the end after creating all order lines to avoid an extra iteration for checking if warehouses are local
-        // TODO: check if string to represent timestamp for O_ENTRY works
-        String entryDate = TimeHelper.formatDate(new Date());
-        executeQuery("N_CREATE_ORDER", orderNumber, customerDistrictId, customerWarehouseId, customerId, entryDate, numOfItems, isAllLocal, customerFirstName, customerMiddleName, customerLastName);
+        Date entryDate = new Date();
+        String entryDateStr = TimeHelper.formatDate(entryDate);
+        executeQuery("N_CREATE_ORDER", orderNumber, customerDistrictId, customerWarehouseId, customerId, entryDate, new BigDecimal(numOfItems), isAllLocal, customerFirstName, customerMiddleName, customerLastName);
         executeQuery("N_CREATE_ORDER_SMALL", orderNumber, customerDistrictId, customerWarehouseId, customerId, entryDate, customerFirstName, customerMiddleName, customerLastName);
 
         //4. Print output
@@ -143,12 +146,12 @@ public class NewOrderTransaction extends BaseTransaction {
                 customerWarehouseId, customerDistrictId, customerId,
                 customerLastName, customerInfo.getString(CqlQueries.N_C_CREDIT_INDEX), customerDiscount));
         System.out.println(String.format("2. W_TAX: %.4f, D_TAX: %.4f", warehouseTax, districtTax));
-        System.out.println(String.format("3. O_ID: %d, O_ENTRY_D: %s", orderNumber, entryDate));
+        System.out.println(String.format("3. O_ID: %d, O_ENTRY_D: %s", orderNumber, entryDateStr));
         System.out.println(String.format("4. NUM_ITEMS: %d, TOTAL_AMOUNT: %.2f", numOfItems, totalAmount));
         System.out.println("5. Each item details:");
         for(int i = 0; i < numOfItems; i++) {
             System.out.println(String.format(
-                    "\t ITEM_NUMBER: %d, I_NAME: %s, SUPPLIER_WAREHOUSE: %d, QUANTITY: %d, OL_AMOUNT: %.2f, S_QUANTITY: %d",
+                    "\t ITEM_NUMBER: %d, I_NAME: %s, SUPPLIER_WAREHOUSE: %d, QUANTITY: %.0f, OL_AMOUNT: %.2f, S_QUANTITY: %.0f",
                     itemNumbers.get(i), itemNames.get(i), supplierWarehouses.get(i), quantities.get(i), orderLineAmounts.get(i), adjustedQuantities.get(i)));
         }
 
