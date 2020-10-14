@@ -157,4 +157,13 @@ public class CqlQueries {
     public static final int I_OL_I_ID_INDEX = 0;
     public static final int I_OL_I_NAME_INDEX = 1;
     public static final int I_OL_QUANTITY_INDEX = 2;
+
+
+    // -------------END STATE QUERIES ----------------------------------------------------------------------------
+    public static final String END_STATE_WAREHOUSE = "select sum(w_ytd) from warehouse";
+    public static final String END_STATE_DISTRICT = "select sum(d_ytd), sum(d_next_o_id) from district";
+    public static final String END_STATE_CUSTOMER = "select sum(C_BALANCE), sum(C_YTD_PAYMENT), sum(C_PAYMENT_CNT), sum(C_DELIVERY_CNT) from customer";
+    public static final String END_STATE_ORDER = "select max(o_id), sum(o_ol_cnt) from order_new";
+    public static final String END_STATE_ORDERLINE = "select sum(ol_amount), sum(ol_quantity) from order_line";
+    public static final String END_STATE_STOCK = "select sum(S_QUANTITY), sum(S_YTD), sum(S_ORDER_CNT), sum(S_REMOTE_CNT) from stock";
 }

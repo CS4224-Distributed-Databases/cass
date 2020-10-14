@@ -7,6 +7,7 @@ import util.CqlQueries;
 import util.TimeHelper;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -62,19 +63,23 @@ public class OrderStatusTransaction extends BaseTransaction {
 
         List<Row> lastOrderDetails = executeQuery("O_GET_LAST_ORDER_DETAILS", customerWarehouseId, customerDistrictId, lastOrderID);
         for (Row item: lastOrderDetails){
-
             Integer itemID = item.getInt(CqlQueries.ORDER_OL_ITEM_ID_INDEX);
             Integer supplyWarehouse = item.getInt(CqlQueries.ORDER_OL_SUPPLY_WAREHOUSE_ID_INDEX);
             BigDecimal quantity = item.getDecimal(CqlQueries.ORDER_OL_QUANTITY_INDEX);
             BigDecimal amount = item.getDecimal(CqlQueries.ORDER_OL_AMOUNT_INDEX);
-            String deliveryDate = TimeHelper.formatDate(item.getTimestamp(CqlQueries.ORDER_OL_DELIVERY_DATE_INDEX));
+            Date deliveryDate = item.getTimestamp(CqlQueries.ORDER_OL_DELIVERY_DATE_INDEX);
+            String deliveryDateString = "";
+            if (deliveryDate != null) {
+                deliveryDateString = TimeHelper.formatDate(deliveryDate);
+            }
+
             System.out.printf("Order line in last order item ID: %d, supply warehouse ID: %d, "
                             + "quantity: %f, price: %f, delivery date: %s\n",
                     itemID,
                     supplyWarehouse,
                     quantity,
                     amount,
-                    deliveryDate);
+                    deliveryDateString);
         }
         System.out.println("Finish executing Order Status Transaction...");
     }
