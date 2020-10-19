@@ -58,6 +58,8 @@ public class Runner {
 
         // (4) Take in inputs...parser from stdin redirection.
         String consistencyLevel = args[0];
+        Integer clients = Integer.parseInt(args[1]);
+        System.out.println(clients);
         HashMap<String, PreparedStatement> insertPrepared = new HashMap<>();
         Scanner sc = new Scanner(System.in);
         int numOfTransactions = 0;
