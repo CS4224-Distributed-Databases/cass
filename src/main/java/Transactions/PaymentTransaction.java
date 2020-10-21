@@ -34,7 +34,7 @@ public class PaymentTransaction extends BaseTransaction {
     @Override
     public void execute() {
 
-        System.out.println("Starting Execution of Payment Transaction...");
+        System.out.println("Start Payment...");
         prepareStatement("P_GET_WAREHOUSE_INFO", CqlQueries.P_GET_WAREHOUSE_INFO);
         prepareStatement("P_UPDATE_WAREHOUSE_PAYMENT", CqlQueries.P_UPDATE_WAREHOUSE_PAYMENT);
         prepareStatement("P_GET_DISTRICT_INFO", CqlQueries.P_GET_DISTRICT_INFO);
@@ -66,7 +66,6 @@ public class PaymentTransaction extends BaseTransaction {
                 customerWarehouseId, customerDistrictId, customerId);
 
         //4. Print output
-        //TODO: check if this is the correct format expected
         System.out.println(String.format(
                 "1. Customer: (%d, %d, %d), Name: (%s, %s, %s), Address: (%s, %s, %s, %s, %s), C_PHONE: %s, C_SINCE: %s, C_CREDIT: %s, C_CREDIT_LIM: %.2f, C_DISCOUNT: %.4f, C_BALANCE: %.2f",
                 customerWarehouseId, customerDistrictId, customerId,
@@ -93,7 +92,6 @@ public class PaymentTransaction extends BaseTransaction {
         ));
 
         System.out.println(String.format("4. Payment: %.2f", payment));
-
-        System.out.println("Finish executing Payment Transaction...");
+        System.out.println("Finish Payment...");
     }
 }

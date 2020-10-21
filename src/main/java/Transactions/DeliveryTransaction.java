@@ -35,7 +35,7 @@ public class DeliveryTransaction extends BaseTransaction {
     @Override
     public void execute() {
 
-        System.out.println("Starting Execution of Delivery Transaction...");
+        System.out.println("Start Delivery...");
         prepareStatement("YET_DELIVERED_ORDER", CqlQueries.YET_DELIVERED_ORDER);
         prepareStatement("UPDATE_YET_DELIVERED_ORDER", CqlQueries.UPDATE_YET_DELIVERED_ORDER);
         prepareStatement("GET_ORDER_LINES", CqlQueries.GET_ORDER_LINES);
@@ -86,6 +86,6 @@ public class DeliveryTransaction extends BaseTransaction {
             executeQuery("UPDATE_CUSTOMER_BALANCE_AND_DELIVERY_COUNT", orderLineAmount.add(customerBalance), deliveryCount+1, warehouseID, i, customerNumber);
         }
 
-        System.out.println("Finish executing Delivery Transactions...");
+        System.out.println("Finish Delivery...");
     }
 }

@@ -53,21 +53,21 @@ public class LoadData {
     // So Item is split into 2 parts of execution.
     public void executeLoadData() throws Exception {
         loadWarehouse();
-        System.out.println("Finish Loading Warehouse Data");
+        System.out.println("Finish Loading Warehouse");
         loadDistrict();
-        System.out.println("Finish Loading District Data");
+        System.out.println("Finish Loading District");
         loadCustomer();
-        System.out.println("Finish Loading Customer Data");
+        System.out.println("Finish Loading Customer");
         loadItemPartOne();
-        System.out.println("Finish Loading Item Data - Part 1");
+        System.out.println("Finish Loading Item - Part 1");
         loadOrderline();
-        System.out.println("Finish Loading Order Line Data");
+        System.out.println("Finish Loading Order Line");
         loadOrder();
-        System.out.println("Finish Loading Order Data");
+        System.out.println("Finish Loading Order");
         loadStock();
-        System.out.println("Finish Loading Stock Data");
+        System.out.println("Finish Loading Stock");
         loadItemPartTwo();
-        System.out.println("Finish loading Item Data - Part 2");
+        System.out.println("Finish loading Item - Part 2");
     }
 
     public static void loadWarehouse() throws IOException {

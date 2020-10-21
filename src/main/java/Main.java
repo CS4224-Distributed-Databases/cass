@@ -86,9 +86,9 @@ public class Main {
             } else if (inputLine.startsWith("D")) {
                 transaction = new DeliveryTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("O")) {
-                //transaction = new OrderStatusTransaction(session, insertPrepared, consistencyLevel);
+                transaction = new OrderStatusTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("S")) {
-                //transaction = new StockLevelTransaction(session, insertPrepared, consistencyLevel);
+                transaction = new StockLevelTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("I")) {
                 transaction = new PopularItemTransaction(session, insertPrepared, consistencyLevel);
             } else if (inputLine.startsWith("T")) {
@@ -100,7 +100,6 @@ public class Main {
             if (transaction != null) {
                 numOfTransactions++;
                 transaction.parseInput(sc, inputLine);
-                //CHECK IF WE WANT TO INCLUDE parseInput time as well?
                 transactionStart = System.nanoTime();
                 transaction.execute();
                 transactionEnd = System.nanoTime();

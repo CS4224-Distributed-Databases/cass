@@ -49,7 +49,7 @@ public class NewOrderTransaction extends BaseTransaction {
     @Override
     public void execute() {
 
-        System.out.println("Starting Execution of New Order Transaction...");
+        System.out.println("Start New Order...");
         prepareStatement("N_GET_DISTRICT_INFO", CqlQueries.N_GET_DISTRICT_INFO);
         prepareStatement("N_UPDATE_DISTRICT_NEXT_O_ID", CqlQueries.N_UPDATE_DISTRICT_NEXT_O_ID);
         prepareStatement("N_GET_CUSTOMER_INFO", CqlQueries.N_GET_CUSTOMER_INFO);
@@ -148,13 +148,13 @@ public class NewOrderTransaction extends BaseTransaction {
         System.out.println(String.format("2. W_TAX: %.4f, D_TAX: %.4f", warehouseTax, districtTax));
         System.out.println(String.format("3. O_ID: %d, O_ENTRY_D: %s", orderNumber, entryDateStr));
         System.out.println(String.format("4. NUM_ITEMS: %d, TOTAL_AMOUNT: %.2f", numOfItems, totalAmount));
-        System.out.println("5. Each item details:");
+        System.out.println("5. Each item:");
         for(int i = 0; i < numOfItems; i++) {
             System.out.println(String.format(
                     "\t ITEM_NUMBER: %d, I_NAME: %s, SUPPLIER_WAREHOUSE: %d, QUANTITY: %.0f, OL_AMOUNT: %.2f, S_QUANTITY: %.0f",
                     itemNumbers.get(i), itemNames.get(i), supplierWarehouses.get(i), quantities.get(i), orderLineAmounts.get(i), adjustedQuantities.get(i)));
         }
 
-        System.out.println("Finish executing New Order Transaction...");
+        System.out.println("Finish New Order...");
     }
 }

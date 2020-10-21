@@ -32,7 +32,7 @@ public class StockLevelTransaction extends BaseTransaction {
     @Override
     public void execute() {
 
-        System.out.println("Starting Execution of Stock Level Transaction...");
+        System.out.println("Start Stock Level...");
         prepareStatement("S_GET_DISTRICT", CqlQueries.S_GET_DISTRICT);
         prepareStatement("S_GET_LAST_L_ORDERS", CqlQueries.S_GET_LAST_L_ORDERS);
         prepareStatement("S_GET_STOCK_ITEMS", CqlQueries.S_GET_STOCK_ITEMS);
@@ -66,8 +66,8 @@ public class StockLevelTransaction extends BaseTransaction {
             }
         }
 
-        System.out.printf("Number of items below threshold: %d\n", itemsBelowThresholdCount);
-        System.out.println("Finish executing Stock Level Transaction...");
+        System.out.printf("Num of items below threshold: %d\n", itemsBelowThresholdCount);
+        System.out.println("Finish Stock Level...");
     }
 }
 //S,1,1,30,4

@@ -25,7 +25,7 @@ public class TopBalanceTransaction extends BaseTransaction {
     @Override
     public void execute() {
 
-        System.out.println("Starting Execution of Top Balance Transaction...");
+        System.out.println("Start Top Balance...");
         prepareStatement("GET_CUSTOMERS_ORDERED_BY_BALANCE", CqlQueries.GET_CUSTOMERS_ORDERED_BY_BALANCE);
 
         // Algorithm:
@@ -79,6 +79,6 @@ public class TopBalanceTransaction extends BaseTransaction {
             System.out.println(String.format("4. District Name: %s", topCustomer.districtName));
         }
 
-        System.out.println("Finish executing Top Balance Transactions...");
+        System.out.println("Finish Top Balance...");
     }
 }

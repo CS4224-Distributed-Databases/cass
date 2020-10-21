@@ -33,7 +33,7 @@ public class PopularItemTransaction extends BaseTransaction {
     @Override
     public void execute() {
 
-        System.out.println("Starting Execution of Popular Item Transaction...");
+        System.out.println("Start Popular Item...");
         prepareStatement("I_GET_DISTRICT_NEXT_ORDER_NUM", CqlQueries.I_GET_DISTRICT_NEXT_ORDER_NUM);
         prepareStatement("I_GET_ORDER_INFO", CqlQueries.I_GET_ORDER_INFO);
         prepareStatement("I_GET_ORDER_LINES", CqlQueries.I_GET_ORDER_LINES);
@@ -97,7 +97,7 @@ public class PopularItemTransaction extends BaseTransaction {
         // 3. Print output
         System.out.println(String.format("1. District: (%d, %d)", warehouseId, districtId));
         System.out.println(String.format("2. Number of last orders: %d", numOfLastOrders));
-        System.out.println("3. Iterating through orders");
+        System.out.println("3. For each order");
 
         HashSet<ItemData> distinctPopularItems = new HashSet<>(); // for calculating percentages later
 
@@ -125,7 +125,7 @@ public class PopularItemTransaction extends BaseTransaction {
         }
 
         //TODO: check this part if percentage is calculated correctly
-        System.out.println("4. For each distinct popular item");
+        System.out.println("4. For each popular item");
         for (ItemData itemData: distinctPopularItems) {
             int numOfOrders = numOfOrdersPerItem.get(itemData.itemId);
             double percentage =  ((double) numOfOrders / numOfLastOrders) * 100.0;
@@ -133,7 +133,7 @@ public class PopularItemTransaction extends BaseTransaction {
             System.out.println(String.format("\tPercentage of last orders containing this: %.2f%%", percentage));
         }
 
-        System.out.println("Finish executing Popular Item Transactions...");
+        System.out.println("Finish Popular Item...");
     }
 
 }

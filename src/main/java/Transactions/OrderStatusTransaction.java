@@ -34,11 +34,10 @@ public class OrderStatusTransaction extends BaseTransaction {
     @Override
     public void execute() {
 
-        System.out.println("Starting Execution of Order Status Transaction...");
+        System.out.println("Start Order Status...");
         prepareStatement("O_GET_CUSTOMER_INFO", CqlQueries.O_GET_CUSTOMER_INFO);
         prepareStatement("O_GET_CUSTOMER_LAST_ORDER", CqlQueries.O_GET_CUSTOMER_LAST_ORDER);
         prepareStatement("O_GET_LAST_ORDER_DETAILS", CqlQueries.O_GET_LAST_ORDER_DETAILS);
-
 
         Row customerInfo = executeQuery("O_GET_CUSTOMER_INFO", customerWarehouseId, customerDistrictId, customerId).get(0);
         String customerFirstName = customerInfo.getString(CqlQueries.ORDER_C_FIRST_INDEX);
@@ -81,7 +80,7 @@ public class OrderStatusTransaction extends BaseTransaction {
                     amount,
                     deliveryDateString);
         }
-        System.out.println("Finish executing Order Status Transaction...");
+        System.out.println("Finish Order Status...");
     }
 }
 //O,1,1,95

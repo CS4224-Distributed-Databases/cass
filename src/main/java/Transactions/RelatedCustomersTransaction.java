@@ -37,7 +37,7 @@ public class RelatedCustomersTransaction extends BaseTransaction {
     @Override
     public void execute() {
 
-        System.out.println("Starting Execution of Related Customers Transaction...");
+        System.out.println("Start Related Customers...");
 
         prepareStatement("GET_CUSTOMER_ORDERS", CqlQueries.GET_CUSTOMER_ORDERS);
         prepareStatement("GET_ITEM_NUMBER_FROM_ORDER_LINE", CqlQueries.GET_ITEM_NUMBER_FROM_ORDER_LINE);
@@ -84,11 +84,11 @@ public class RelatedCustomersTransaction extends BaseTransaction {
             }
         }
 
-        System.out.println("Below are the Related Customers....");
+        System.out.println("Related Customers are: ");
         for (String customer: relatedCustomers){
             System.out.println(customer);
         }
 
-        System.out.println("Finish executing Related Customers Transactions...");
+        System.out.println("Finish Related Customers...");
     }
 }
