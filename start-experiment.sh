@@ -7,7 +7,7 @@
 runProject() {
   # Remove old log files on each server.
   for ((i=0; i<5; i++)); do
-    server="xcnd$((20 + $i % 5))"
+    server="xcnc$((20 + $i % 5))"
     sshpass -p $1 ssh cs4224j@$server.comp.nus.edu.sg "cd cass && rm -rf log && mkdir log" 
     echo "Remove old logs"
   done
@@ -17,7 +17,7 @@ runProject() {
   
   #iterate through each client and assign to the correct server to run
   for ((i=1; i<=$3; i++)); do
-	server="xcnd$((20 + $i % 5))"
+	server="xcnc$((20 + $i % 5))"
 	echo "Assign client $i on $server"
 	
 	input_file="src\main\java\DataSource\xact-files\$i.txt"
@@ -32,7 +32,7 @@ runProject() {
 
 buildProject() {
   for ((i=1; i<=5; i++)); do
-    server="xcnd$((20 + $i % 5))"
+    server="xcnc$((20 + $i % 5))"
     sshpass -p $1 ssh cs4224j@$server.comp.nus.edu.sg "cd cass && mvn clean dependency:copy-dependencies package"
     echo "Built project on $server"
   done
