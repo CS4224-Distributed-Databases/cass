@@ -25,7 +25,7 @@ public class EndStateRunner {
                 .addContactPoint("192.168.48.171")
                 .addContactPoint("192.168.48.172")
                 .addContactPoint("192.168.48.173")
-                .withSocketOptions(new SocketOptions().setReadTimeoutMillis(50000)) // 50 seconds
+                .withSocketOptions(new SocketOptions().setReadTimeoutMillis(500000)) // 500 seconds
                 .build();
 //        cluster = Cluster.builder().addContactPoint("127.0.0.1")
 //                .build();
