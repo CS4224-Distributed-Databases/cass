@@ -99,7 +99,7 @@ public class NewOrderTransaction extends BaseTransaction {
                 newRemoteCount += 1;
             }
             executeQuery("N_UPDATE_STOCK_QUANTITY",
-                    adjustedQuantity, stockYtd.add(BigDecimal.ONE), orderCount + 1, newRemoteCount, supplierWarehouse, itemNumber);
+                    adjustedQuantity, stockYtd.add(quantity), orderCount + 1, newRemoteCount, supplierWarehouse, itemNumber);
             Row itemInfo = executeQuery("N_GET_ITEM_INFO", itemNumber).get(0);
             BigDecimal itemPrice = itemInfo.getDecimal(CqlQueries.N_I_PRICE_INDEX);
             BigDecimal itemAmount = itemPrice.multiply(quantity);
