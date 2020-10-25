@@ -106,7 +106,7 @@ public class CqlQueries {
 
     // -------------DELIVERY TRANSACTION ----------------------------------------------------------------------------
     public static String YET_DELIVERED_ORDER
-            = "SELECT * FROM Order_New WHERE O_W_ID = ? AND O_D_ID = ? LIMIT 1;";
+            = "SELECT * FROM Order_New WHERE O_W_ID = ? AND O_D_ID = ?";
     public static final String UPDATE_YET_DELIVERED_ORDER
             = "UPDATE Order_New SET O_CARRIER_ID = ? WHERE O_ID = ? AND O_C_ID = ? AND O_W_ID = ? AND O_D_ID = ? IF EXISTS;";
     public static final String GET_ORDER_LINES = "SELECT * FROM Order_Line WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?";
@@ -120,6 +120,7 @@ public class CqlQueries {
     // Indexes for Delivery Transaction
     public static final int DELIVERY_O_ID_INDEX = 2;
     public static final int DELIVERY_O_C_ID = 3;
+    public static final int DELIVERY_O_CARRIER_ID = 5;
 
     public static final int DELIVERY_OL_NUMBER = 3;
     public static final int DELIVERY_OL_AMOUNT = 4;

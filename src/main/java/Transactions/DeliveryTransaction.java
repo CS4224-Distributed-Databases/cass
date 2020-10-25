@@ -51,8 +51,18 @@ public class DeliveryTransaction extends BaseTransaction {
                 continue;
             }
 
-            Integer orderID = order.get(0).getInt(CqlQueries.DELIVERY_O_ID_INDEX);
-            Integer customerNumber = order.get(0).getInt(CqlQueries.DELIVERY_O_C_ID);
+            Integer orderID = -1;
+            Integer customerNumber = -1;
+            // Look for the order with O CARRIER ID = null using for loop
+            // Results are returned in ascending O_ID number
+            // Note that the query did not filter by O CARRIER ID = null and LIMIT 1 because O CARRIER ID is not a clustering column
+            for (Row o: order){
+                if(o.getObject(CqlQueries.DELIVERY_O_CARRIER_ID) == null){
+                    orderID = o.getInt(CqlQueries.DELIVERY_O_ID_INDEX);
+                    customerNumber = o.getInt(CqlQueries.DELIVERY_O_C_ID);
+                    break;
+                }
+            }
 
             // 2: Update order O_ID by setting O CARRIER ID to CARRIER ID
             // O_CARRIER_ID, O_ID, O_C_ID, O_W_ID, O_D_ID
