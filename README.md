@@ -77,8 +77,8 @@ Set the first column to be this experiment number.
 2.2 Manually copy the results into a row of the main `throughput.csv` which records all min, avg and max throughputs for all experiments. 
 Set the first column to be this experiment number. <br>
 3. For Performance Statistics: <br>
-3.1 TODO <br>
-3.2 TODO <br>
+3.1 Open `output/client_stats.csv` file <br>
+3.2 Manually copy the results into a row of the main `clients.csv` which records all clients statistics for all experiments.  <br>
 
 ## Optional Local Set up instructions
 - Clone this project into an IDLE of your choice
