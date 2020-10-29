@@ -128,8 +128,8 @@ Reload Data:<br>
 `truncate cs4224.warehouse;`<br>
 
 `COPY cs4224.warehouse(W_ID, W_NAME, W_STREET_1, W_STREET_2, 
-W_CITY, W_STATE, W_ZIP, W_TAX, W_YTD) FROM 
-'/home/stuproj/cs4224j/cass-data/warehouse_processed.csv';`
+W_CITY, W_STATE, W_ZIP, W_TAX, W_YTD) 
+FROM '/home/stuproj/cs4224j/cass-data/warehouse_processed.csv';`
 
 **District**
 
@@ -240,7 +240,7 @@ Reload Data: <br>
 S_REMOTE_CNT, S_DIST_01, S_DIST_02, S_DIST_03, S_DIST_04, 
 S_DIST_05, S_DIST_06, S_DIST_07, S_DIST_08, S_DIST_09, S_DIST_10, 
 S_DATA)
-FROM'/home/stuproj/cs4224j/cass-data/stock_processed.csv';`
+FROM '/home/stuproj/cs4224j/cass-data/stock_processed.csv';`
 
 
 ## Notes about Cassandra
