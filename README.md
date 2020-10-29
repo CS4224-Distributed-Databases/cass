@@ -109,5 +109,139 @@ Creating a local cluster to test
 2.3 Restart the failing node <br>
 2.4 Then run `./nodetool repair -full cs4224` <br>
 
+
+## Saving and Reloading data
+
+This portion explains how to save and reload data after the first load, 
+for quick refresh of data after each experiment using cqlsh.
+
+1. Start cqlsh: `./cqlsh --request-timeout="10000" 192.168.48.169`
+
+**Warehouse**
+
+Save Data: <br>
+`COPY cs4224.warehouse(W_ID, W_NAME, W_STREET_1, W_STREET_2, 
+W_CITY, W_STATE, W_ZIP, W_TAX, W_YTD)
+TO '/home/stuproj/cs4224j/cass-data/warehouse_processed.csv';`
+
+Reload Data:<br>
+`truncate cs4224.warehouse;`<br>
+
+`COPY cs4224.warehouse(W_ID, W_NAME, W_STREET_1, W_STREET_2, 
+W_CITY, W_STATE, W_ZIP, W_TAX, W_YTD) FROM 
+'/home/stuproj/cs4224j/cass-data/warehouse_processed.csv';`
+
+**District**
+
+Save Data: <br>
+`COPY cs4224.district(D_W_ID, D_ID, D_NAME, D_STREET_1, D_STREET_2, 
+D_CITY, D_STATE, D_ZIP, D_TAX, D_YTD, D_NEXT_O_ID, W_TAX)
+TO '/home/stuproj/cs4224j/cass-data/district_processed.csv';`
+
+Reload Data:<br>
+`truncate cs4224.district;`<br>
+
+`COPY cs4224.district(D_W_ID, D_ID, D_NAME, D_STREET_1, D_STREET_2, 
+D_CITY, D_STATE, D_ZIP, D_TAX, D_YTD, D_NEXT_O_ID, W_TAX)
+FROM '/home/stuproj/cs4224j/cass-data/district_processed.csv';`
+
+**Customer**
+
+Save Data: <br>
+`COPY cs4224.Customer (C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, 
+C_STREET_1, C_STREET_2, C_CITY, C_STATE, C_ZIP, C_PHONE, 
+C_SINCE, C_CREDIT, C_CREDIT_LIM, C_DISCOUNT, C_BALANCE, 
+C_YTD_PAYMENT, C_PAYMENT_CNT, C_DELIVERY_CNT, C_DATA, 
+C_D_NAME, C_W_NAME) 
+TO '/home/stuproj/cs4224j/cass-data/customer_processed.csv';`
+
+Reload Data:<br>
+`truncate cs4224.customer;`<br>
+
+`COPY cs4224.Customer (C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, 
+C_STREET_1, C_STREET_2, C_CITY, C_STATE, C_ZIP, C_PHONE, 
+C_SINCE, C_CREDIT, C_CREDIT_LIM, C_DISCOUNT, C_BALANCE, 
+C_YTD_PAYMENT, C_PAYMENT_CNT, C_DELIVERY_CNT, C_DATA, 
+C_D_NAME, C_W_NAME) 
+FROM '/home/stuproj/cs4224j/cass-data/customer_processed.csv';`
+
+**Order_New**
+
+Save Data: <br>
+`COPY cs4224.Order_New (O_C_ID, O_ID, O_W_ID, O_D_ID, O_CARRIER_ID, 
+O_OL_CNT, O_ALL_LOCAL, O_ENTRY, O_C_FIRST, O_C_MIDDLE, O_C_LAST)
+TO '/home/stuproj/cs4224j/cass-data/order_new_processed.csv';`
+
+Reload Data:<br>
+`truncate cs4224.order_new;`
+
+`COPY cs4224.Order_New (O_C_ID, O_ID, O_W_ID, O_D_ID, O_CARRIER_ID, 
+O_OL_CNT, O_ALL_LOCAL, O_ENTRY, O_C_FIRST, O_C_MIDDLE, O_C_LAST)
+FROM '/home/stuproj/cs4224j/cass-data/order_new_processed.csv';`
+
+**Order_Small**
+
+Save Data: <br>
+`COPY cs4224.Order_Small (O_ID, O_C_ID, O_W_ID, O_D_ID, O_CARRIER_ID, 
+O_ENTRY, O_C_FIRST, O_C_MIDDLE, O_C_LAST)
+TO '/home/stuproj/cs4224j/cass-data/order_small_processed.csv';`
+
+Reload Data: <br>
+`truncate cs4224.order_small;`
+
+`COPY cs4224.Order_Small (O_ID, O_C_ID, O_W_ID, O_D_ID, O_CARRIER_ID, 
+O_ENTRY, O_C_FIRST, O_C_MIDDLE, O_C_LAST)
+FROM '/home/stuproj/cs4224j/cass-data/order_small_processed.csv';`
+
+**Item**
+
+Save Data: <br>
+`COPY cs4224.Item (I_ID, I_NAME, I_PRICE, I_IM_ID, I_DATA, I_O_ID_LIST)
+TO '/home/stuproj/cs4224j/cass-data/item_processed.csv' WITH PAGETIMEOUT=10000;`
+
+Reload Data: <br>
+`truncate cs4224.item;`
+
+`COPY cs4224.Item (I_ID, I_NAME, I_PRICE, I_IM_ID, I_DATA, I_O_ID_LIST) 
+FROM '/home/stuproj/cs4224j/cass-data/item_processed.csv' 
+WITH CHUNKSIZE=5 AND NUMPROCESSES=4 AND MAXBATCHSIZE=2;`
+
+- Must include the extra flags, otherwise will get timeout the page timeout, see datastax docs [here](https://docs.datastax.com/en/archived/cql/3.3/cql/cql_reference/cqlshCopy.html#cqlshCopy__description)
+
+**Order_Line**
+
+Save Data: <br>
+`COPY cs4224.Order_Line (OL_NUMBER, OL_W_ID, OL_D_ID, OL_O_ID, OL_I_ID, 
+OL_DELIVERY_D, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY, OL_DIST_INFO, 
+OL_I_NAME) 
+TO '/home/stuproj/cs4224j/cass-data/order_line_processed.csv';`
+
+Reload Data: <br>
+`truncate cs4224.order_line;`
+
+`COPY cs4224.Order_Line (OL_NUMBER, OL_W_ID, OL_D_ID, OL_O_ID, OL_I_ID, 
+OL_DELIVERY_D, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY, OL_DIST_INFO, 
+OL_I_NAME) 
+FROM '/home/stuproj/cs4224j/cass-data/order_line_processed.csv';`
+
+**Stock**
+
+Save Data: <br>
+`COPY cs4224.stock (S_W_ID, S_I_ID, S_QUANTITY, S_YTD, S_ORDER_CNT, 
+S_REMOTE_CNT, S_DIST_01, S_DIST_02, S_DIST_03, S_DIST_04, 
+S_DIST_05, S_DIST_06, S_DIST_07, S_DIST_08, S_DIST_09, S_DIST_10, 
+S_DATA)
+TO '/home/stuproj/cs4224j/cass-data/stock_processed.csv';`
+
+Reload Data: <br>
+`truncate cs4224.stock;`
+
+`COPY cs4224.stock (S_W_ID, S_I_ID, S_QUANTITY, S_YTD, S_ORDER_CNT, 
+S_REMOTE_CNT, S_DIST_01, S_DIST_02, S_DIST_03, S_DIST_04, 
+S_DIST_05, S_DIST_06, S_DIST_07, S_DIST_08, S_DIST_09, S_DIST_10, 
+S_DATA)
+FROM'/home/stuproj/cs4224j/cass-data/stock_processed.csv';`
+
+
 ## Notes about Cassandra
 - Cassandra will order the partition keys and the clustering keys (ordered by their precedence in the PRIMARY KEY definition), and then the columns follow in ascending order. Hence the ordering of the columns in createTable is not followed.
