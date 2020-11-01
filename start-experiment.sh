@@ -23,10 +23,23 @@ runProject() {
   	input_file="src/main/java/DataSource/xact-files/${i}.txt"
   	stdout_file="log/${i}.out.log"
   	stderr_file="log/${i}.err.log"
-  	sshpass -p $1 ssh cs4224j@$server.comp.nus.edu.sg "source .bash_profile; cd cass && java -Xms45g -Xmx45g -cp target/*:target/dependency/*:. Main ${2} < ${input_file} > ${stdout_file} 2> ${stderr_file} &" > /dev/null 2>&1 &
+  	sshpass -p $1 ssh cs4224j@$server.comp.nus.edu.sg "source .bash_profile; cd cass && java -Xms2g -Xmx2g -cp target/*:target/dependency/*:. Main ${2} < ${input_file} > ${stdout_file} 2> ${stderr_file} &" > /dev/null 2>&1 &
   	
   	echo "Finish running $i transaction file on $server"
   done
+
+  ## use format below jobs stuff that didnt process, comment out above first!!
+  # for ((i=38; i<=38; i++)); do
+  # 	server="xcnc$((20 + $i % 5))"
+  # 	echo "Assign client $i on $server"
+  	
+  # 	input_file="src/main/java/DataSource/xact-files/${i}.txt"
+  # 	stdout_file="log/${i}.out.log"
+  # 	stderr_file="log/${i}.err.log"
+  # 	sshpass -p $1 ssh cs4224j@$server.comp.nus.edu.sg "source .bash_profile; cd cass && java -Xms2g -Xmx2g -cp target/*:target/dependency/*:. Main ${2} < ${input_file} > ${stdout_file} 2> ${stderr_file} &" > /dev/null 2>&1 &
+  	
+  # 	echo "Finish running $i transaction file on $server"
+  # done
 }
 
 buildProject() {
