@@ -24,7 +24,7 @@ public class ItemData {
         if (obj == this) {
             return true;
         }
-        return this.itemId == ((ItemData) obj).itemId && this.itemName == ((ItemData) obj).itemName && this.quantity.equals(((ItemData) obj).quantity);
+        return this.itemId == ((ItemData) obj).itemId && this.itemName.equals(((ItemData) obj).itemName) && this.quantity.equals(((ItemData) obj).quantity);
     }
 
     @Override
