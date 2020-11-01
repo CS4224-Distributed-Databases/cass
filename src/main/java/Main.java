@@ -21,6 +21,7 @@ public class Main {
                 .addContactPoint("192.168.48.171")
                 .addContactPoint("192.168.48.172")
                 .addContactPoint("192.168.48.173")
+                .withSocketOptions(new SocketOptions().setReadTimeoutMillis(0)) // value 0 read timeouts
                 .build();
 
         cluster.init();
