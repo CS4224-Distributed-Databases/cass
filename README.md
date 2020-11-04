@@ -65,14 +65,14 @@ replacing `password` with the password to the servers, `consistencyLevel` with `
 **Generating statistics after an experiment**
 
 *Generate the Database state*
-1. run `java -Xms2g -Xmx2g -cp target/*:target/dependency/*:. EndStateRunner directoryName`
+1. run `java -Xms4g -Xmx4g -cp target/*:target/dependency/*:. EndStateRunner directoryName`
 , replacing directoryName with directory containing log files (remember to include / at the end)
 2. Open `end_state.csv` file in the directory containing the logs
 3. Manually copy the results into a row of the main `db-state.csv` which records all db end state for all experiments. 
 Set the first column to be this experiment number. 
 
 *Generate Performance and Throughput Statistics*
-1. run `java -Xms2g -Xmx2g -cp target/*:target/dependency/*:. TotalStatsRunner numClients directoryName`
+1. run `java -Xms4g -Xmx4g -cp target/*:target/dependency/*:. TotalStatsRunner numClients directoryName`
 , replacing numClients with number of clients set and directoryName with directory containing log files (remember to include / at the end)
 2. For Throughput Statistics: <br>
 2.1 Open `throughput_stats.csv` file in the directory containing the logs <br>
