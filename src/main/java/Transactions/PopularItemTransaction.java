@@ -43,11 +43,6 @@ public class PopularItemTransaction extends BaseTransaction {
 
         // 2. iterate through orderNum = [N-L to N)
         // lookup the orderlines with this orderNum and find the most popular items among all these orderlines
-        // TODO: Did not use the range query for orderNum <- not sure if it would be slower/faster
-        //  as it would have overhead of clustering (order entries are created with every newOrder xact and take up 40%),
-        //  would need to group by orderId later to get the most popular item
-        //  Can potentially remove orderid as clustering key and use it as primary key instead?
-
         HashMap<Integer, Integer> numOfOrdersPerItem = new HashMap<>(); // <itemId, numOfOrdersThisItemAppearsIn>
         HashMap<Integer, List<ItemData>> popularItemsPerOrder = new HashMap<>();
         HashMap<Integer, Row> orderInfoMap = new HashMap<>(); // <orderNum, orderRow>
