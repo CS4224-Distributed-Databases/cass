@@ -143,7 +143,7 @@ public class Main {
 
     private static long getPercentileLatency(List<Long> latencies, int percentile) {
         int length = latencies.size();
-        int index = length * (percentile / 100);
+        int index = (int) (length * ((double) percentile / 100.0));
         return latencies.get(index);
     }
 
