@@ -14,6 +14,11 @@ This learning tasks for this project are
 - Benchmark the performance of an application
 
 ## Project Structure
+Configuration files are in the config folder. These are files we used to configure setting up cassandra and running of our code.
+- `/cass_conf/$server_id` folders each contain a specific `cassandra.yaml` file configured for each server.
+- `start-cassandra.sh` and `start-cassandra-bg.sh` runs cassandra on the node, using the corresponding `cassandra.yaml` file configured for each server. `bg` versions run cass in the background, normal one runs in the foreground.
+- `printlogs.sh` this is a simple bash script that goes through our cass/log folder to identify which clients have finished running their transactions.
+
 The bulk of our code are in the folder src -> main -> java
 - DataLoader Folder: Contains the code to load the data into the Cassandra database and create table schemas
 - DataSource Folder: Since the data and transaction files are too big, we will not upload them on github. Ensure that you copy the data csv and transaction txt files to this directory locally. 
