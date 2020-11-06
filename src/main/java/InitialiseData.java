@@ -11,11 +11,11 @@ public class InitialiseData {
     public static void main(String[] args) throws Exception {
         // (1) Initialise Cluster
         cluster = Cluster.builder()
-                .addContactPoint("192.168.48.169")
-                .addContactPoint("192.168.48.170")
-                .addContactPoint("192.168.48.171")
-                .addContactPoint("192.168.48.172")
-                .addContactPoint("192.168.48.173")
+                .addContactPoint(args[0])
+                .addContactPoint(args[1])
+                .addContactPoint(args[2])
+                .addContactPoint(args[3])
+                .addContactPoint(args[4])
                 .build();
 
         cluster.init();

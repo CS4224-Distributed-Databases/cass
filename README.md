@@ -19,9 +19,11 @@ The bulk of our code are in the folder src -> main -> java
 - DataSource Folder: Since the data and transaction files are too big, we will not upload them on github. Ensure that you copy the data csv and transaction txt files to this directory locally. 
 - Transactions: Contains a base transaction file + 8 Transaction queries
 
-## Running the project
-**Ensure that you have the latest code on the server**
+We also have one script file to assist in running the experiments on the servers
+- start-experiment.sh
 
+## Running the project
+**Ensure that you have the latest code on the server (one of them will do since they have access to the same file space) and local computer**
 1. Clone the latest github project into your computer
 2. Ensure that you copy the data csv files into `DataSource/data-files` and transaction txt files into `DataSource/xact-files` folder locally. <br>
 The files can be downloaded [here](http://www.comp.nus.edu.sg/~cs4224/project-files.zip).
@@ -30,13 +32,18 @@ The files can be downloaded [here](http://www.comp.nus.edu.sg/~cs4224/project-fi
  Then run `scp –r cass cs4224j@xcnc20.comp.nus.edu.sg:~/cass`
 5. Run `ls -l` and check that file permissions are `rwx------`. If it is not, run `chmod -R 700 cass`. 
 
+**Ensure that your server contains the following installations**
+1. apache-maven-3.0.5
+2. jdk1.8.0_261
+3. apache-cassandra-3.11.8
+
 **Compiling the project on the server**
-1. ssh into one server `ssh cs4224j@xcnc20.comp.nus.edu.sg`
+1. ssh into one of the intended server `ssh cs4224j@xcnc20.comp.nus.edu.sg`
 2. Run `cd cass` to enter the project directory 
 3. Build the project by `mvn clean dependency:copy-dependencies package`
 
 **Create Tables and Loading data on the server**
-1. `java -Xms45g -Xmx45g -cp target/*:target/dependency/*:. InitialiseData` <br>
+1. `java -Xms45g -Xmx45g -cp target/*:target/dependency/*:. InitialiseData serverOneIPAddr serverTwoIPAddr serverThreeIPAddr serverFourIPAddr serverFiveIPAddr` <br>
 2. Optional: do a quick validation of the data uploaded <br>
 2.1 On a new xcnc20 terminal, `cd temp/apache-cassandra-3.11.8/bin` <br>
 2.2 run `./cqlsh --request-timeout="100" 192.168.48.169` <br>
@@ -65,8 +72,8 @@ replacing `password` with the password to the servers, `consistencyLevel` with `
 **Generating statistics after an experiment**
 
 *Generate the Database state*
-1. run `java -Xms4g -Xmx4g -cp target/*:target/dependency/*:. EndStateRunner directoryName`
-, replacing directoryName with directory containing log files (remember to include / at the end)
+1. run `java -Xms4g -Xmx4g -cp target/*:target/dependency/*:. EndStateRunner directoryName serverOneIPAddr serverTwoIPAddr serverThreeIPAddr serverFourIPAddr serverFiveIPAddr`
+, replacing directoryName with directory containing log files (remember to include / at the end). serverIPOne, serverIPTwo...etc simply denotes the IPAddresses of the servers you intend to run cassandra on. Note that we assume that you want to use the default ports for cockroachdb. Hence it is important to make sure that the ports are free on the servers you want to use.                                                                                                     
 2. Open `end_state.csv` file in the directory containing the logs
 3. Manually copy the results into a row of the main `db-state.csv` which records all db end state for all experiments. 
 Set the first column to be this experiment number. 

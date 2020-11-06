@@ -21,15 +21,12 @@ public class EndStateRunner {
 
         // (1) Initialise Cluster
         cluster = Cluster.builder()
-                .addContactPoint("192.168.48.169")
-                .addContactPoint("192.168.48.170")
-                .addContactPoint("192.168.48.171")
-                .addContactPoint("192.168.48.172")
-                .addContactPoint("192.168.48.173")
-                .withSocketOptions(new SocketOptions().setReadTimeoutMillis(0)) // unlimited
+                .addContactPoint(args[1])
+                .addContactPoint(args[2])
+                .addContactPoint(args[3])
+                .addContactPoint(args[4])
+                .addContactPoint(args[5])
                 .build();
-//        cluster = Cluster.builder().addContactPoint("127.0.0.1")
-//                .build();
 
         cluster.init();
 
