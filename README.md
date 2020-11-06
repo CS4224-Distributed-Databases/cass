@@ -45,8 +45,7 @@ The files can be downloaded [here](http://www.comp.nus.edu.sg/~cs4224/project-fi
 **Create Tables and Loading data on the server**
 1. `java -Xms45g -Xmx45g -cp target/*:target/dependency/*:. InitialiseData serverOneIPAddr serverTwoIPAddr serverThreeIPAddr serverFourIPAddr serverFiveIPAddr` <br>
 2. Optional: do a quick validation of the data uploaded <br>
-2.1 On a new xcnc20 terminal, `cd temp/apache-cassandra-3.11.8/bin` <br>
-2.2 run `./cqlsh --request-timeout="100" 192.168.48.169` <br>
+2.2 Run `cqlsh --request-timeout="100" 192.168.48.169` <br>
 2.3 `Use cs4224;` <br>
 2.4 `Select count(*) from Order_line allow filtering;` should return 3746763 rows <br>
 2.5 repeat for other tables <br>
@@ -117,15 +116,20 @@ Creating a local cluster to test
 2.1 Read the error message <br>
 2.2 Go to the data directory to `rm md-NO-.db` with NO being the number that was reported in the error message <br>
 2.3 Restart the failing node <br>
-2.4 Then run `./nodetool repair -full cs4224` <br>
+2.4 Then run `nodetool repair -full cs4224` <br>
 
+3. Adding cassandra directory to PATH <br>
+3.1 Open bash profile `vim .bash_profile`  <br>
+3.2 Add the following line `export PATH=~/<your_cassandra_directory>/bin:$PATH`  <br>
+3.3 Save and `source .bash_profile` <br>
+3.4 Now cassandra tool commands like `cqlsh / nodetool` can be used anywhere <br>
 
 ## Saving and Reloading data
 
 This portion explains how to save and reload data after the first load, 
 for quick refresh of data after each experiment using cqlsh.
 
-1. Start cqlsh: `./cqlsh --request-timeout="10000" 192.168.48.169`
+1. Start cqlsh: `cqlsh --request-timeout="10000" 192.168.48.169`
 
 **Warehouse**
 
