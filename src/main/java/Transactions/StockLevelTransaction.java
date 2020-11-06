@@ -39,9 +39,7 @@ public class StockLevelTransaction extends BaseTransaction {
 
         Row districtInfo = executeQuery("S_GET_DISTRICT", warehouseId, districtId).get(0);
         Integer nextOID = districtInfo.getInt(CqlQueries.STOCK_D_NEXT_OID_INDEX);
-        // current nextOID on this test data is 3001, but data in orderline table not complete
-        // hardcode to 10 instead for testing
-        // nextOID = 10;
+
         Integer startingFromOrder = nextOID - ordersToExamine;
         List<Row> orders = executeQuery("S_GET_LAST_L_ORDERS", warehouseId, districtId, startingFromOrder, nextOID);
 
@@ -50,12 +48,6 @@ public class StockLevelTransaction extends BaseTransaction {
             Integer itemId = order.getInt(CqlQueries.STOCK_OL_OID_INDEX);
             itemIDs.add(itemId);
         }
-
-        // current set on this test data is large like {34223,756456,3455} which return no stock since data in stock table not complete
-        // hardcode to {1,2} instead for testing
-//        itemIDs.clear();
-//        itemIDs.add(1);
-//        itemIDs.add(2);
 
         Integer itemsBelowThresholdCount = 0;
         for (Integer itemID : itemIDs) {
@@ -70,5 +62,3 @@ public class StockLevelTransaction extends BaseTransaction {
         System.out.println("Finish Stock Level...");
     }
 }
-//S,1,1,30,4
-// one has 96 level, one is 26 level

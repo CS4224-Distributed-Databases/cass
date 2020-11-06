@@ -83,4 +83,3 @@ public class OrderStatusTransaction extends BaseTransaction {
         System.out.println("Finish Order Status...");
     }
 }
-//O,1,1,95
