@@ -77,7 +77,7 @@ replacing `password` with the password to the servers, `consistencyLevel` with `
 
 *Generate the Database state*
 1. run `java -Xms4g -Xmx4g -cp target/*:target/dependency/*:. EndStateRunner directoryName serverOneIPAddr serverTwoIPAddr serverThreeIPAddr serverFourIPAddr serverFiveIPAddr`
-, replacing directoryName with directory containing log files (remember to include / at the end). serverIPOne, serverIPTwo...etc simply denotes the IPAddresses of the servers you intend to run cassandra on. Note that we assume that you want to use the default ports for cockroachdb. Hence it is important to make sure that the ports are free on the servers you want to use.                                                                                                     
+, replacing directoryName with directory containing log files (remember to include / at the end). serverIPOne, serverIPTwo...etc simply denotes the IPAddresses of the servers you intend to run cassandra on. Note that we assume that you want to use the default ports for cassandra. Hence it is important to make sure that the ports are free on the servers you want to use.                                                                                                     
 2. Open `end_state.csv` file in the directory containing the logs
 3. Manually copy the results into a row of the main `dbstate.csv` which records all db end state for all experiments. 
 Set the first column to be this experiment number. 
